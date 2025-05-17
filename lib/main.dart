@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
+import 'package:hiring_competition_app/constants/theme.dart';
 import 'package:hiring_competition_app/firebase_options.dart';
 import 'package:hiring_competition_app/views/auth/login_page.dart';
+import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -28,7 +30,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      theme: getApptheme(),
+      home: OnboardingScreen(),
     );
   }
 }

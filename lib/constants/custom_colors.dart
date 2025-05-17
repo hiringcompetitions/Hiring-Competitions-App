@@ -11,4 +11,5 @@ class CustomColors {
   Color purple = const Color(0xFF731DD8);
   Color pink = const Color(0xFFFF51F3);
   Color green = const Color(0xFF93FD8C); 
+  Color blue=Color(0xFF445DFF);
 }
