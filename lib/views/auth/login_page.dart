@@ -31,15 +31,9 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 50),
 
             // Headings
-            Text("WELCOME BACK!", style: GoogleFonts.koulen(
-              fontSize: 34,
-              color: CustomColors().blackText,
-              fontWeight: FontWeight.w500,
-            )),
-            Text("Login to continue your journey", style: GoogleFonts.commissioner(
-              color: CustomColors().greyText,
-              fontSize : 16,
-            ),),
+            Text("WELCOME BACK!", style: Theme.of(context).textTheme.displayMedium,),
+            Text("Login to continue your journey", style: Theme.of(context).textTheme.labelLarge
+            ),
 
             SizedBox(height: 20),
 
@@ -54,13 +48,7 @@ class LoginPage extends StatelessWidget {
             // Forgot Password
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children : [Text("Forgot password ?", style: GoogleFonts.commissioner(fontSize: 14, color: CustomColors().blackText),)]
-            ),
-
-            // Login Button
-            Container(
-              child : Text("Login"),
-            )
+              children : [Text("Forgot password ?", style:Theme.of(context).textTheme.labelSmall)])
           ],
         ),
       ),
