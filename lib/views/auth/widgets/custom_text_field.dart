@@ -16,10 +16,7 @@ class CustomTextField extends StatelessWidget {
     return SizedBox(
       height: 48,
       child: TextField(
-        style: GoogleFonts.commissioner(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
+        style: Theme.of(context).textTheme.labelMedium,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.commissioner(

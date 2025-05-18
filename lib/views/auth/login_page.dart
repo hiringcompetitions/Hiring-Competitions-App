@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
 
 class LoginPage extends StatelessWidget {
@@ -18,15 +17,9 @@ class LoginPage extends StatelessWidget {
             SizedBox(height: 50),
 
             // Headings
-            Text("WELCOME BACK!", style: GoogleFonts.koulen(
-              fontSize: 34,
-              color: CustomColors().blackText,
-              fontWeight: FontWeight.w500,
-            )),
-            Text("Login to continue your journey", style: GoogleFonts.commissioner(
-              color: CustomColors().greyText,
-              fontSize : 16,
-            ),),
+            Text("WELCOME BACK!", style: Theme.of(context).textTheme.displayMedium,),
+            Text("Login to continue your journey", style: Theme.of(context).textTheme.labelLarge
+            ),
 
             SizedBox(height: 20),
 
@@ -41,7 +34,7 @@ class LoginPage extends StatelessWidget {
             // Forgot Password
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children : [Text("Forgot password ?", style: GoogleFonts.commissioner(fontSize: 14, color: CustomColors().blackText),)])
+              children : [Text("Forgot password ?", style:Theme.of(context).textTheme.labelSmall)])
           ],
         ),
       ),
