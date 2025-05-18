@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field, unused_catch_clause
 
+import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -15,6 +16,10 @@ class AuthService {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
       return userCredential.user;
     } on FirebaseAuthException catch(e) {
+      String err = ErrorFormatter().formatAuthError(e);
+      Flushbar(
+        title: err,
+      );
       return null;
     }
   }

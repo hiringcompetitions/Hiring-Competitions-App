@@ -13,33 +13,34 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      child: TextField(
-        style: Theme.of(context).textTheme.labelMedium,
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: GoogleFonts.commissioner(
-            fontSize: 18,
-            color: CustomColors().greyText,
+    return TextField(
+      style: GoogleFonts.commissioner(
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+      ),
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: GoogleFonts.commissioner(
+          fontSize: 18,
+          color: CustomColors().greyText,
+        ),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(
+            top: 7,
+            bottom: 7,
+            left: 16,
+            right: 6,
           ),
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(
-              top: 7,
-              bottom: 7,
-              left: 16,
-              right: 6,
-            ),
-            child: Image.asset("lib/assets/$image.png"),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(width: 2, color: CustomColors().blackText),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(width: 2, color: CustomColors().blackText),
-          ),
+          child: Image.asset("lib/assets/$image.png", height: 10,),
+        ),
+        contentPadding: EdgeInsets.all(0),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(100),
+          borderSide: BorderSide(width: 2, color: CustomColors().blackText),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(100),
+          borderSide: BorderSide(width: 2, color: CustomColors().blackText),
         ),
       ),
     );
