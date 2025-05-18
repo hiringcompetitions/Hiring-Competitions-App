@@ -6,10 +6,12 @@ import '../services/auth_services.dart';
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
+  String? _error = null;
   User? _user;
 
   bool? get isLoading => _isLoading;
   User? get user => _user;
+  String? get error => _error;
  
   Future<String?> googleLogin() async {
     _isLoading = true;

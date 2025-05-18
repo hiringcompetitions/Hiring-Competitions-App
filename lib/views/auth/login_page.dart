@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  
+  LoginPage({super.key});
+
+  void loginValidator(String email, String password) {
+    if(email.contains("@vishnu.edu.in")) {
+      ErrorToast(title: "Please enter your college mail id",);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<AuthProvider>(context);
     return Scaffold(
       backgroundColor: CustomColors().white,
       body: Padding(
@@ -41,7 +54,13 @@ class LoginPage extends StatelessWidget {
             // Forgot Password
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children : [Text("Forgot password ?", style: GoogleFonts.commissioner(fontSize: 14, color: CustomColors().blackText),)])
+              children : [Text("Forgot password ?", style: GoogleFonts.commissioner(fontSize: 14, color: CustomColors().blackText),)]
+            ),
+
+            // Login Button
+            Container(
+              child : Text("Login"),
+            )
           ],
         ),
       ),
