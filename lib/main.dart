@@ -7,6 +7,7 @@ import 'package:hiring_competition_app/firebase_options.dart';
 import 'package:hiring_competition_app/views/auth/login_page.dart';
 import 'package:hiring_competition_app/views/auth/other_info_page.dart';
 import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
+import 'package:hiring_competition_app/views/splash/splashScreen.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getApptheme(),
-      home: OnboardingScreen(),
+      home: Splashscreen(),
     );
   }
 }
