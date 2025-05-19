@@ -33,7 +33,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       "title": "Skill Match",
       "subtitle":
-          "No more endless scrolling, get company offers that suit your skills.",
+          "No more endless scrolling - instantly discover company offers tailored to your skills and goals.",
       "textcolor": CustomColors().blackText,
       "color": CustomColors().yellow,
     },
@@ -75,7 +75,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   controller: _controller,
                   count: onboardingData.length,
                   effect: const WormEffect(
-                    dotColor: Colors.grey,
+                    dotColor: Colors.black26,
                     activeDotColor: Colors.black,
                     dotHeight: 10,
                     dotWidth: 10,
@@ -105,7 +105,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       );
                     }
                   },
-                  child: Text("Next"),
+                  child: isLastPage ? Text("Let's go") : Text("Next"),
                 )
               ],
             ),

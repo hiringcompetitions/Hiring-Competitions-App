@@ -1,6 +1,4 @@
 // ignore_for_file: unused_field, unused_catch_clause
-
-import 'package:another_flushbar/flushbar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -11,36 +9,36 @@ class AuthService {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   // Login
-  Future<User?> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       UserCredential userCredential = await auth.signInWithEmailAndPassword(email: email, password: password);
-      return userCredential.user;
+      return {"response" : userCredential.user};
     } on FirebaseAuthException catch(e) {
-      String err = ErrorFormatter().formatAuthError(e);
-      Flushbar(
-        title: err,
-      );
-      return null;
+      return {"response" : e};
     }
   }
 
   // Create Account
-  Future<User?> createAccount(String email, String password) async {
+  Future<Map<String, dynamic>> createAccount(String email, String password) async {
     try {
       UserCredential userCredential = await auth.createUserWithEmailAndPassword(email: email, password: password);
-      return userCredential.user;
+      return {"response" : userCredential.user};
     } on FirebaseAuthException catch(e) {
-      throw Exception(e.toString());
+      final err = ErrorFormatter().formatAuthError(e);
+      return {"response" : err};
     }
   }
 
   // Google Login
-  Future<User?> googleLogin() async {
+  Future<Map<String, dynamic>> googleLogin() async {
     try {
+      await FirebaseAuth.instance.signOut();
       // trigger authentication flow
+      final GoogleSignInAccount? gUser = await GoogleSignIn().signOut();
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       
-      if(googleUser == null) return null; 
+      if(googleUser == null) return {"response" : "Google Signin failed"};
+      if(!googleUser.email.endsWith("@vishnu.edu.in")) return {"response" : "Please select your college email address"};
 
       // Obtain the details
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -53,10 +51,14 @@ class AuthService {
 
       final userCredential = await auth.signInWithCredential(credential);
 
-      return userCredential.user;
+      if(userCredential.user == null) {
+        return {"response" : null};
+      }
+
+      return {"response" : userCredential.user};
     } catch(e) {
-      print(ErrorFormatter().formatAuthError(e.toString()));
-      return null;
+      print(e.toString());
+      return {"response" : e.toString()};
     }
   }
 
@@ -67,5 +69,5 @@ class AuthService {
     } catch(e) {
       print(e);
     }
-  } 
+  }
 }

@@ -30,7 +30,7 @@ ThemeData getApptheme(){
               color: CustomColors().blackText,
       ),
       headlineSmall: GoogleFonts.commissioner(
-              fontSize: 12,
+              fontSize: 16,
               color: CustomColors().blackText,
       ),
       

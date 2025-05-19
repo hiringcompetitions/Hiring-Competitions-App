@@ -29,13 +29,18 @@ class OnboardTemplate extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.asset("lib/assets/images/${image}.png",),
-          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset("lib/assets/images/${image}.png", height: 250,),
+            ],
+          ),
+          SizedBox(height: 24,),
           Text(title,style: Theme.of(context).textTheme.displayLarge?.copyWith(color: textcolor),),
-          SizedBox(height: 10,),
+          SizedBox(height: 5,),
           SizedBox(
             width: size.width*0.8,
-            child: Text(description,style: Theme.of(context).textTheme.headlineMedium?.copyWith(color: textcolor),))
+            child: Text(description,style: Theme.of(context).textTheme.headlineSmall?.copyWith(color: textcolor),))
         ],
       ),
     );

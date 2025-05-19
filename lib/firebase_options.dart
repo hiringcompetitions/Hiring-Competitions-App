@@ -41,48 +41,49 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyC8m5n_josYx1rGtSzrx4yKGs7BzuzSmn0',
-    appId: '1:1081337303914:web:63341e22e36f5da2becb13',
-    messagingSenderId: '1081337303914',
-    projectId: 'hiring-competitions-76402',
-    authDomain: 'hiring-competitions-76402.firebaseapp.com',
-    storageBucket: 'hiring-competitions-76402.firebasestorage.app',
-    measurementId: 'G-ESWZJSFD0Z',
+    apiKey: 'AIzaSyBaQlSUwCnoQHkct0SJAq8fTChAe1BnieU',
+    appId: '1:438545075754:web:042845c43ae9513bf47d53',
+    messagingSenderId: '438545075754',
+    projectId: 'hiring-competitions-ff5cd',
+    authDomain: 'hiring-competitions-ff5cd.firebaseapp.com',
+    storageBucket: 'hiring-competitions-ff5cd.firebasestorage.app',
+    measurementId: 'G-S4JWP9P80Q',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBn91Nt7kDebQVkFeSFCHBNRaLJr9oDhkE',
-    appId: '1:1081337303914:android:93de02abcc231d73becb13',
-    messagingSenderId: '1081337303914',
-    projectId: 'hiring-competitions-76402',
-    storageBucket: 'hiring-competitions-76402.firebasestorage.app',
+    apiKey: 'AIzaSyBv2DZUWmD6kfpjopwxtyn5nnFBsb5oTro',
+    appId: '1:438545075754:android:77ede1eb866fbd33f47d53',
+    messagingSenderId: '438545075754',
+    projectId: 'hiring-competitions-ff5cd',
+    storageBucket: 'hiring-competitions-ff5cd.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDO67ubHLOElaFaMIb4PEWoHd-kODRXJ30',
-    appId: '1:1081337303914:ios:677e4ae054008f17becb13',
-    messagingSenderId: '1081337303914',
-    projectId: 'hiring-competitions-76402',
-    storageBucket: 'hiring-competitions-76402.firebasestorage.app',
-    iosBundleId: 'com.example.hiringCompetitions',
+    apiKey: 'AIzaSyBAiKPEC_ZTvl8Wu3v-0C13HC6G6IH8CcI',
+    appId: '1:438545075754:ios:af32164878b85638f47d53',
+    messagingSenderId: '438545075754',
+    projectId: 'hiring-competitions-ff5cd',
+    storageBucket: 'hiring-competitions-ff5cd.firebasestorage.app',
+    iosBundleId: 'com.example.hiringCompetitionApp',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDO67ubHLOElaFaMIb4PEWoHd-kODRXJ30',
-    appId: '1:1081337303914:ios:677e4ae054008f17becb13',
-    messagingSenderId: '1081337303914',
-    projectId: 'hiring-competitions-76402',
-    storageBucket: 'hiring-competitions-76402.firebasestorage.app',
-    iosBundleId: 'com.example.hiringCompetitions',
+    apiKey: 'AIzaSyBAiKPEC_ZTvl8Wu3v-0C13HC6G6IH8CcI',
+    appId: '1:438545075754:ios:af32164878b85638f47d53',
+    messagingSenderId: '438545075754',
+    projectId: 'hiring-competitions-ff5cd',
+    storageBucket: 'hiring-competitions-ff5cd.firebasestorage.app',
+    iosBundleId: 'com.example.hiringCompetitionApp',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyC8m5n_josYx1rGtSzrx4yKGs7BzuzSmn0',
-    appId: '1:1081337303914:web:102a49e258711787becb13',
-    messagingSenderId: '1081337303914',
-    projectId: 'hiring-competitions-76402',
-    authDomain: 'hiring-competitions-76402.firebaseapp.com',
-    storageBucket: 'hiring-competitions-76402.firebasestorage.app',
-    measurementId: 'G-QMQMQZ4QHK',
+    apiKey: 'AIzaSyBaQlSUwCnoQHkct0SJAq8fTChAe1BnieU',
+    appId: '1:438545075754:web:008412a85eae67eaf47d53',
+    messagingSenderId: '438545075754',
+    projectId: 'hiring-competitions-ff5cd',
+    authDomain: 'hiring-competitions-ff5cd.firebaseapp.com',
+    storageBucket: 'hiring-competitions-ff5cd.firebasestorage.app',
+    measurementId: 'G-0FJD85FP1B',
   );
+
 }

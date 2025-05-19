@@ -41,6 +41,13 @@ dependencies:
   google_fonts: ^6.2.1
   another_flushbar: ^1.12.30
   smooth_page_indicator: ^1.2.1
+  flutter_launcher_icons: ^0.14.3
+  firebase_messaging: ^15.2.5
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "lib/assets/images/icon.png"
 
 dev_dependencies:
   flutter_test:
