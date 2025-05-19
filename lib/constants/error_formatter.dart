@@ -19,6 +19,9 @@ class ErrorFormatter {
     String errorMessage = 'An unknown error occurred. Please try again.';
 
     switch (error.code) {
+      case 'invalid-credential':
+        errorMessage = 'Invalid Credentials';
+        break;
       case 'invalid-email':
         errorMessage = 'The email address is not valid.';
         break;

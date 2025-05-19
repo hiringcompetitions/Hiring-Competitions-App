@@ -5,15 +5,18 @@ import 'package:hiring_competition_app/constants/custom_colors.dart';
 class CustomTextField extends StatelessWidget {
   final String hintText;
   final String image;
+  final TextEditingController controller;
   const CustomTextField({
     required this.hintText,
     required this.image,  
+    required this.controller,
     super.key
   });
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       style: GoogleFonts.commissioner(
         fontSize: 18,
         fontWeight: FontWeight.w500,
@@ -26,14 +29,14 @@ class CustomTextField extends StatelessWidget {
         ),
         prefixIcon: Padding(
           padding: const EdgeInsets.only(
-            top: 7,
-            bottom: 7,
+            top: 10,
+            bottom: 10,
             left: 16,
-            right: 6,
+            right: 10,
           ),
-          child: Image.asset("lib/assets/$image.png", height: 10,),
+          child: Image.asset("lib/assets/$image.png", height: 8,),
         ),
-        contentPadding: EdgeInsets.all(0),
+        contentPadding: EdgeInsets.symmetric(horizontal: 10),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(100),
           borderSide: BorderSide(width: 2, color: CustomColors().blackText),
