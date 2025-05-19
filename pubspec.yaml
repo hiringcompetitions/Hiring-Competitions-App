@@ -43,6 +43,7 @@ dependencies:
   smooth_page_indicator: ^1.2.1
   flutter_launcher_icons: ^0.14.3
   firebase_messaging: ^15.2.5
+  avatar_plus: ^0.0.5
 
 flutter_launcher_icons:
   android: true

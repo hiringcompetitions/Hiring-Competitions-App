@@ -49,7 +49,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
     return branches[rollNo.substring(6,8)];
   }
 
-  Future<void> addUser(String gender) async {
+  Future<void> addUser(String gender, String nickName) async {
     try {
       if(gender == 'No Gender') {
         errorToast("Please select Gender", context);
@@ -64,6 +64,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
 
       UserModel user = UserModel(
                         name: authProvider.user?.displayName ?? 'No Name',
+                        nickName: nickName,
                         rollNo: authProvider.user?.email?.substring(0, 10) ?? 'No Email',
                         branch: branch ?? 'No Branch',
                         passedOutYear: passedOutYear ?? 'No PassedOutYear', 
@@ -74,7 +75,8 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
                       );
 
       final res = await firestoreProvider.addUser(user);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      final authUser = await authProvider.user!;
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: authUser,)));
     } catch(e) {
       errorToast(e.toString(), context);
     }
@@ -172,7 +174,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
             // Continue Button
             GestureDetector(
               onTap: () {
-                addUser(gender ?? 'Not gender');
+                addUser(gender ?? 'Not gender', _nameController.text);
               },
               child: Container(
                 alignment: Alignment(0, 0),

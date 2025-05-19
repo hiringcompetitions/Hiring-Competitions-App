@@ -1,5 +1,6 @@
 class UserModel {
   final String name;
+  final String nickName;
   final String rollNo;
   final String passedOutYear;
   final String branch;
@@ -10,6 +11,7 @@ class UserModel {
 
   UserModel({
     required this.name,
+    required this.nickName,
     required this.rollNo,
     required this.passedOutYear,
     required this.branch,
@@ -22,6 +24,7 @@ class UserModel {
   factory UserModel.fromMap(Map<String, dynamic> map) {
     return UserModel(
       name: map['name'] ?? '',
+      nickName : map['nickName'] ?? '',
       rollNo: map['rollNo'] ?? '',
       passedOutYear: map['passedOutYear'] ?? '',
       branch: map['branch'] ?? '',
@@ -35,6 +38,7 @@ class UserModel {
   Map<String, dynamic> toMap() {
     return {
       "name" : name,
+      "nickName" : nickName,
       "rollNo" : rollNo,
       "passedOutYear" : passedOutYear,
       "branch" : branch,
@@ -47,6 +51,7 @@ class UserModel {
 
   UserModel copywith([
     String ? name,
+    String ? nickName,
     String ? rollNo,
     String ? passedOutYear,
     String ? branch,
@@ -57,6 +62,7 @@ class UserModel {
   ]) {
     return UserModel(
       name: name ?? this.name, 
+      nickName: nickName ?? this.nickName,
       rollNo: rollNo ?? this.rollNo,
       passedOutYear: passedOutYear ?? this.passedOutYear,
       branch: branch ?? this.branch,
