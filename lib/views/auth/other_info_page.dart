@@ -20,23 +20,29 @@ class OtherInfoPage extends StatefulWidget {
 
 class _OtherInfoPageState extends State<OtherInfoPage> {
   TextEditingController _nameController = TextEditingController();
-  String? gender;
+  String? gender = 'Select Gender';
+
+  List<String> options = ["Select Gender","Male", "Female"];
 
   String? getPassedOutYear(String? rollNo) {
     // 23PA1A0577
     if(rollNo == null) return null;
-    if(rollNo.toLowerCase().contains("pa1a")) {
-      return "20"+(int.parse(rollNo.substring(0,2)) + 4).toString();
-    } else {
-      return "20"+(int.parse(rollNo.substring(0,2)) + 3).toString();
+    try {
+      if(rollNo.toLowerCase().contains("pa1a")) {
+        return "20"+(int.parse(rollNo.substring(0,2)) + 4).toString();
+      } else {
+        return "20"+(int.parse(rollNo.substring(0,2)) + 3).toString();
+      }
+    } catch(e) {
+      errorToast("Please Enter your college mail id", context);
     }
   }
 
   String? getBranch(String? rollNo) {
     Map<String, String> branches = {
       "01" : "CIVIL",
-      "02" : "MECH",
-      "03" : "EEE",
+      "02" : "EEE",
+      "03" : "MECH",
       "04" : "ECE",
       "05" : "CSE",
       "12" : "IT",
@@ -51,7 +57,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
 
   Future<void> addUser(String gender, String nickName) async {
     try {
-      if(gender == 'No Gender') {
+      if(gender == 'Select Gender') {
         errorToast("Please select Gender", context);
         return;
       }
@@ -115,66 +121,49 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
 
             // Gender
             Container(
-              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
                 border: Border.all(
                   width: 2,
                   color: CustomColors().darkBlue,
                 ),
-                borderRadius: BorderRadius.circular(20)
+                borderRadius: BorderRadius.circular(100)
               ),
-              child: Column(
+              child: Row(
+                spacing: 12,
                 children: [
-                  Row(
-                    spacing: 10,
-                    children: [
-                      Image.asset("lib/assets/user.png", height: 30,),
-                      Text("Gender", style: GoogleFonts.commissioner(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),),
-                    ],
-                  ),
-                  SizedBox(height: 10,),
-                  RadioListTile(
-                    title: Text(
-                      "Male",
-                      style: GoogleFonts.commissioner(
-                          fontSize: 18, fontWeight: FontWeight.w500),
+                  Image.asset("lib/assets/user.png", height: 28,),
+                  DropdownButton<String>(
+                    style: GoogleFonts.commissioner(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: CustomColors().greyText,
                     ),
-                    activeColor: CustomColors().darkBlue,
-                    value: "male",
-                    groupValue: gender,
-                    onChanged: (val) {
+                    elevation: 0,
+                    value: gender,
+                    dropdownColor: Colors.white,
+                    onChanged: (String? newValue) {
                       setState(() {
-                        gender = "male";
+                        gender = newValue!;
                       });
                     },
-                  ),
-                  RadioListTile(
-                    title: Text(
-                      "Female",
-                      style: GoogleFonts.commissioner(
-                          fontSize: 18, fontWeight: FontWeight.w500),
-                    ),
-                    activeColor: CustomColors().darkBlue,
-                    value: "female",
-                      groupValue: gender,
-                      onChanged: (val) {
-                        setState(() {
-                          gender = "female";
-                        });
-                      },
+                    items: options.map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value, style: TextStyle(color: Colors.black),),
+                      );
+                    }).toList(),
                   ),
                 ],
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(height: 14,),
 
             // Continue Button
             GestureDetector(
               onTap: () {
-                addUser(gender ?? 'Not gender', _nameController.text);
+                addUser(gender ?? 'Select Gender', _nameController.text);
               },
               child: Container(
                 alignment: Alignment(0, 0),
