@@ -56,8 +56,6 @@ class AuthProvider extends ChangeNotifier {
 
     final user = await _authService.createAccount(email, password);
 
-    print(user["response"]);
-
     if (!(user["response"] is String)) {
       await user["response"].updateDisplayName(name);
       await user["response"].reload();
