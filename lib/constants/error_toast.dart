@@ -1,17 +1,11 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
-class ErrorToast extends StatelessWidget {
-  final String title;
-  const ErrorToast({
-    required this.title,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Flushbar(
-      title: title,
-    );
-  }
+void errorToast(String title, dynamic context) {
+  Flushbar(
+    title: title,
+    messageText: SizedBox.shrink(),
+    duration: Duration(seconds : 2),
+    animationDuration: Duration(milliseconds: 650),
+  ).show(context);
 }
