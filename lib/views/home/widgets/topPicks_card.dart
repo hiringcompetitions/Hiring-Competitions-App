@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
@@ -28,8 +30,8 @@ class TopPicksCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: index == 0
-          ? const EdgeInsets.only(top: 8.0, right: 8, left: 20)
-          : const EdgeInsets.only(top: 8.0, right: 8, left: 0),
+          ? const EdgeInsets.only(top: 8.0, right: 12, left: 20)
+          : const EdgeInsets.only(top: 8.0, right: 12, left: 0),
       child: Container(
         width: 200,
         decoration: BoxDecoration(
