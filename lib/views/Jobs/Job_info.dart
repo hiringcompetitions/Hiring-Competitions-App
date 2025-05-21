@@ -6,7 +6,10 @@ import 'package:hiring_competition_app/views/Jobs/widgets/info_tile.dart';
 import 'package:provider/provider.dart';
 
 class JobInfo extends StatefulWidget {
-  const JobInfo({super.key});
+  final String event_name;
+   JobInfo({
+    required this.event_name,
+    super.key});
 
   @override
   State<JobInfo> createState() => _JobInfoState();
@@ -39,7 +42,7 @@ class _JobInfoState extends State<JobInfo> {
 
   Future<void> fetchDetails() async {
     final provider = Provider.of<InternshipProvider>(context, listen: false);
-    await provider.getdetails("Gen AI Hackathon");
+    await provider.getdetails(widget.event_name);
     setState(() {
       _isLoading = false;
     });
@@ -109,12 +112,17 @@ class _JobInfoState extends State<JobInfo> {
               // AppBar area
               Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(150),
-                        color: const Color(0xFFE5E5E5)),
-                    child: const Icon(Icons.arrow_back_outlined),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(150),
+                          color: const Color(0xFFE5E5E5)),
+                      child: const Icon(Icons.arrow_back_outlined),
+                    ),
                   ),
                   const SizedBox(width: 15),
                   Text(

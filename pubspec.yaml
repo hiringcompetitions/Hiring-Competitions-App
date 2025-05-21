@@ -44,6 +44,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   firebase_messaging: ^15.2.5
   avatar_plus: ^0.0.5
+  shimmer: ^3.0.0
 
 flutter_launcher_icons:
   android: true

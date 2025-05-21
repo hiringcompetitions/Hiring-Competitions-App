@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
@@ -7,8 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/auth/other_info_page.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
-import 'package:hiring_competition_app/views/home/home_page.dart';
-import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class SignupPage extends StatelessWidget {

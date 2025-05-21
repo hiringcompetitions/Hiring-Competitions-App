@@ -1,6 +1,5 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, must_be_immutable
 
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
@@ -9,8 +8,6 @@ import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/auth/other_info_page.dart';
 import 'package:hiring_competition_app/views/auth/signup_page.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
-import 'package:hiring_competition_app/views/home/home_page.dart';
-import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
