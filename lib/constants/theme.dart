@@ -30,8 +30,9 @@ ThemeData getApptheme(){
               color: CustomColors().blackText,
       ),
       headlineSmall: GoogleFonts.commissioner(
-              fontSize: 16,
+              fontSize: 18,
               color: CustomColors().blackText,
+              fontWeight: FontWeight.w600,
       ),
       
       labelLarge: GoogleFonts.commissioner(
@@ -40,7 +41,7 @@ ThemeData getApptheme(){
               
       ),
       labelMedium: GoogleFonts.commissioner(
-              fontSize: 14,
+              fontSize: 16,
               color: CustomColors().greyText,
       ),
       labelSmall: GoogleFonts.commissioner(
