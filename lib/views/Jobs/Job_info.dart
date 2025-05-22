@@ -1,15 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
-import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/info_tile.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class JobInfo extends StatefulWidget {
   final String event_name;
-   JobInfo({
+  final Color logo_color;
+  JobInfo({
+    required this.logo_color,
     required this.event_name,
-    super.key});
+    super.key,
+  });
 
   @override
   State<JobInfo> createState() => _JobInfoState();
@@ -32,20 +35,18 @@ class _JobInfoState extends State<JobInfo> {
     "lastdate",
   ];
 
-  bool _isLoading = true;
-
   @override
-  void initState() {
-    super.initState();
+void initState() {
+  super.initState();
+  WidgetsBinding.instance.addPostFrameCallback((_) {
     fetchDetails();
-  }
+  });
+}
+
 
   Future<void> fetchDetails() async {
     final provider = Provider.of<InternshipProvider>(context, listen: false);
     await provider.getdetails(widget.event_name);
-    setState(() {
-      _isLoading = false;
-    });
   }
 
   String getTimeRemaining(Timestamp lastDate) {
@@ -64,23 +65,33 @@ class _JobInfoState extends State<JobInfo> {
     }
   }
 
+  Widget buildShimmerBlock({required double height, required double width}) {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey.shade300,
+      highlightColor: Colors.grey.shade100,
+      child: Container(
+        height: height,
+        width: width,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<InternshipProvider>(context);
+    final isLoading = provider.isLoading;
 
-    if (_isLoading) {
-      return Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    if (provider.details == null) {
+    if (!isLoading && provider.details == null) {
       return Scaffold(
         body: Center(child: Text(provider.errormessage)),
       );
     }
 
-    final details = provider.details!;
+    final details = provider.details ?? {};
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -90,8 +101,10 @@ class _JobInfoState extends State<JobInfo> {
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           onPressed: () {
             // handle apply logic
@@ -109,7 +122,8 @@ class _JobInfoState extends State<JobInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 40),
+              const SizedBox(height: 20),
+
 
               // AppBar area
               Row(
@@ -121,8 +135,9 @@ class _JobInfoState extends State<JobInfo> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(150),
-                          color: const Color(0xFFE5E5E5)),
+                        borderRadius: BorderRadius.circular(150),
+                        color: const Color(0xFFE5E5E5),
+                      ),
                       child: const Icon(Icons.arrow_back_outlined),
                     ),
                   ),
@@ -136,90 +151,138 @@ class _JobInfoState extends State<JobInfo> {
               const SizedBox(height: 20),
 
               // Title section
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                        color: CustomColors().purple,
-                        borderRadius: BorderRadius.circular(12)),
-                    child: Text(
-                      details["name"].toString().substring(0,1),
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineLarge
-                          ?.copyWith(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w500),
+              isLoading
+                  ? Row(
+                      children: [
+                        buildShimmerBlock(height: 60, width: 60),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            buildShimmerBlock(height: 20, width: 150),
+                            const SizedBox(height: 8),
+                            buildShimmerBlock(height: 14, width: 100),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          decoration: BoxDecoration(
+                              color: widget.logo_color,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Text(
+                            details['name'][0],
+                            style: Theme.of(context)
+                                .textTheme
+                                .headlineLarge
+                                ?.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                        const SizedBox(width: 15),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(details['name'],
+                                style:
+                                    Theme.of(context).textTheme.headlineLarge),
+                            Text(details['company'],
+                                style:
+                                    Theme.of(context).textTheme.labelLarge),
+                          ],
+                        )
+                      ],
+
+              
                     ),
-                  ),
-                  const SizedBox(width: 15),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        details['name'],
-                        style: Theme.of(context).textTheme.headlineLarge,
-                      ),
-                      Text(
-                        details['company'],
-                        style: Theme.of(context).textTheme.labelLarge,
-                      ),
-                    ],
-                  )
-                ],
-              ),
+
               const SizedBox(height: 20),
 
               // Info Tiles
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: List.generate(fields.length, (index) {
-                  return InfoTile(
-                    image: images[index],
-                    text: (fields[index] == 'lastdate')
-                        ? getTimeRemaining(details['lastdate'])
-                        : (details[fields[index]] ?? 'N/A'),
-                  );
-                }),
-              ),
+              isLoading
+                  ? Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: List.generate(
+                        fields.length,
+                        (index) =>
+                            buildShimmerBlock(height: 60, width: 160),
+                      ),
+                    )
+                  : Wrap(
+                      spacing: 10,
+                      runSpacing: 10,
+                      children: List.generate(fields.length, (index) {
+                        return InfoTile(
+                          icon: icons[index],
+                          text: (fields[index] == 'lastdate')
+                              ? getTimeRemaining(details['lastdate'])
+                              : (details[fields[index]] ?? 'N/A'),
+                        );
+                      }),
+                    ),
+
+         
 
               const SizedBox(height: 15),
 
-              Text("About", style: Theme.of(context).textTheme.headlineSmall),
+              // About section
+              Text("About",
+                  style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
-              Text(details['about'],
-                  style: Theme.of(context).textTheme.labelMedium),
+              isLoading
+                  ? buildShimmerBlock(height: 80, width: double.infinity)
+                  : Text(details['about'],
+                      style: Theme.of(context).textTheme.labelMedium),
+
               const SizedBox(height: 15),
 
+              // Other Info section
               Text("Other Info",
                   style: Theme.of(context).textTheme.headlineSmall),
-              SizedBox(height: 8,),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: List.generate(details['other'].length, (index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
+              const SizedBox(height: 8),
+              isLoading
+                  ? Column(
+                      children: List.generate(3, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: buildShimmerBlock(
+                              height: 14, width: double.infinity),
+                        );
+                      }),
+                    )
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("• ",
-                            style: Theme.of(context).textTheme.labelMedium),
-                        const SizedBox(width: 6),
-                        Expanded(
-                          child: Text(
-                            details['other'][index],
-                            style: Theme.of(context).textTheme.labelMedium,
+                      children:
+                          List.generate(details['other'].length, (index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4.0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("• ",
+                                  style:
+                                      Theme.of(context).textTheme.labelMedium),
+                              const SizedBox(width: 6),
+                              Expanded(
+                                child: Text(
+                                  details['other'][index],
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        );
+                      }),
                     ),
-                  );
-                }),
-              ),
             ],
           ),
         ),
