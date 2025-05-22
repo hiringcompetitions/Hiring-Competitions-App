@@ -40,7 +40,7 @@ class OppurtunitiesCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 8),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>JobInfo(event_name: "Gen AI Hackathon")));
+          // Navigator.push(context, MaterialPageRoute(builder: (context) => JobInfo(event_name: "Gen AI Hackathon")));
         },
         child: Container(
             height: 132,
@@ -126,7 +126,7 @@ class OppurtunitiesCard extends StatelessWidget {
                       SizedBox(width: 10),
                       Label(category, ""),
                       Label(place, "location"),
-                      Label(payout, "gift"),
+                      Label(payout, "payout"),
                       Label(deadLine, "time1"),
                     ],
                   ),

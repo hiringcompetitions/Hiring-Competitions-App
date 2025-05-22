@@ -2,29 +2,32 @@ import 'package:avatar_plus/avatar_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
+import 'package:hiring_competition_app/backend/services/firebase_services/auth_services.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_shimmer.dart';
+import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
-  final User user;
-
-  const HomePage({required this.user, super.key});
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+
   @override
   void initState() {
     super.initState();
     Future.microtask(() {
       final provider = Provider.of<FirestoreProvider>(context, listen: false);
-      provider.getNickName(widget.user);
+      final authProvider = Provider.of<CustomAuthProvider>(context, listen: false);
+      provider.getNickName(authProvider.user ?? null);
       provider.getTopPicks();
     });
   }
@@ -80,9 +83,25 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
     final provider = Provider.of<FirestoreProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
+      key: _scaffoldKey,
+      drawer: Drawer(
+        backgroundColor: Colors.white,
+        child: Column(
+          children: [
+            SizedBox(height: 100,),
+            GestureDetector(
+              onTap: () async {
+                await AuthService().signout();
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => OnboardingScreen()));
+              },
+              child: Icon(Icons.logout)),
+          ],
+        ),
+      ),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Drawer();
+                      _scaffoldKey.currentState?.openDrawer();
                     },
                     child: Container(
                       alignment: Alignment.center,
@@ -229,6 +248,11 @@ class _HomePageState extends State<HomePage> {
             StreamBuilder(
                 stream: provider.topPicksSnapshots,
                 builder: (context, snapshot) {
+
+                  if(snapshot.hasError) {
+                    return Text("Error : ${snapshot.error}");
+                  }
+
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return ToppicksShimmer();
                   }
@@ -256,6 +280,7 @@ class _HomePageState extends State<HomePage> {
                           }),
                     );
                   }
+
                   return Container();
                 }),
             SizedBox(

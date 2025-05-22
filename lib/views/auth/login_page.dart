@@ -8,6 +8,7 @@ import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/auth/other_info_page.dart';
 import 'package:hiring_competition_app/views/auth/signup_page.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
+import 'package:hiring_competition_app/views/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -17,7 +18,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   void loginValidator(String email, String password, BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     if(email == "" || password == "") {
       errorToast("Please enter the required credentials", context);
     } else if(!email.contains("@vishnu.edu.in")) {
@@ -27,13 +28,13 @@ class LoginPage extends StatelessWidget {
       if(msg != null) {
         errorToast(msg, context);
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => OtherInfoPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       }
     }
   }
 
   void googleLogin(BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     final res = await provider.googleLogin();
 
     if(res != null) {
@@ -47,7 +48,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthProvider>(context);
+    final provider = Provider.of<CustomAuthProvider>(context);
     return Scaffold(
       backgroundColor: CustomColors().white,
       body: Padding(

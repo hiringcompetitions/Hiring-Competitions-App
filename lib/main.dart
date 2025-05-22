@@ -7,10 +7,6 @@ import 'package:hiring_competition_app/backend/providers/firestore_provider.dart
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
 import 'package:hiring_competition_app/constants/theme.dart';
 import 'package:hiring_competition_app/firebase_options.dart';
-import 'package:hiring_competition_app/views/Jobs/Job_info.dart';
-import 'package:hiring_competition_app/views/auth/other_info_page.dart';
-import 'package:hiring_competition_app/views/home/home_page.dart';
-import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:hiring_competition_app/views/splash/splashScreen.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +20,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>InternshipProvider()),
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CustomAuthProvider()),
         ChangeNotifierProvider(create: (_) => FirestoreProvider()),
       ],
       child: MyApp(),
@@ -40,7 +36,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getApptheme(),
-      home: OnboardingScreen(),
+      home: Splashscreen(),
     );
   }
 }

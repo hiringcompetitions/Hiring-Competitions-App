@@ -16,12 +16,12 @@ class JobInfo extends StatefulWidget {
 }
 
 class _JobInfoState extends State<JobInfo> {
-  final List<IconData> icons = [
-    Icons.location_on_outlined,
-    Icons.access_time_outlined,
-    Icons.attach_money_outlined,
-    Icons.school_outlined,
-    Icons.calendar_today_outlined,
+  final List<String> images = [
+    "location_white",
+    "time1",
+    "payout_white",
+    "user_white",
+    "time1"
   ];
 
   final List<String> fields = [
@@ -54,11 +54,11 @@ class _JobInfoState extends State<JobInfo> {
     final difference = deadline.difference(now);
 
     if (difference.inDays > 0) {
-      return "${difference.inDays} days left";
+      return "${difference.inDays}d left";
     } else if (difference.inHours > 0) {
-      return "${difference.inHours} hours left";
+      return "${difference.inHours}h left";
     } else if (difference.inMinutes > 0) {
-      return "${difference.inMinutes} minutes left";
+      return "${difference.inMinutes}min left";
     } else {
       return "Expired";
     }
@@ -83,6 +83,7 @@ class _JobInfoState extends State<JobInfo> {
     final details = provider.details!;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(22.0),
         child: ElevatedButton(
@@ -90,7 +91,7 @@ class _JobInfoState extends State<JobInfo> {
             backgroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 16),
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
           ),
           onPressed: () {
             // handle apply logic
@@ -98,7 +99,7 @@ class _JobInfoState extends State<JobInfo> {
           child: Text("Apply Now",
               style: Theme.of(context)
                   .textTheme
-                  .titleLarge
+                  .titleMedium
                   ?.copyWith(color: Colors.white)),
         ),
       ),
@@ -108,7 +109,8 @@ class _JobInfoState extends State<JobInfo> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20),
+              SizedBox(height: 40),
+
               // AppBar area
               Row(
                 children: [
@@ -140,10 +142,10 @@ class _JobInfoState extends State<JobInfo> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20, vertical: 10),
                     decoration: BoxDecoration(
-                        color: CustomColors().pink,
+                        color: CustomColors().purple,
                         borderRadius: BorderRadius.circular(12)),
                     child: Text(
-                      "G",
+                      details["name"].toString().substring(0,1),
                       style: Theme.of(context)
                           .textTheme
                           .headlineLarge
@@ -177,7 +179,7 @@ class _JobInfoState extends State<JobInfo> {
                 runSpacing: 10,
                 children: List.generate(fields.length, (index) {
                   return InfoTile(
-                    icon: icons[index],
+                    image: images[index],
                     text: (fields[index] == 'lastdate')
                         ? getTimeRemaining(details['lastdate'])
                         : (details[fields[index]] ?? 'N/A'),
