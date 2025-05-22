@@ -40,7 +40,7 @@ class OppurtunitiesCard extends StatelessWidget {
       padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 8),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>JobInfo(event_name: "Gen AI Hackathon")));
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>JobInfo(event_name: "Gen AI Hackathon",logo_color: colors[index%5],)));
         },
         child: Container(
             height: 132,
@@ -59,7 +59,6 @@ class OppurtunitiesCard extends StatelessWidget {
                     children: [
                   
                       // Logo
-                  
                       Container(
                         height: 50,
                         width: 50,

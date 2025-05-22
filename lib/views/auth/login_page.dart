@@ -8,6 +8,7 @@ import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/auth/other_info_page.dart';
 import 'package:hiring_competition_app/views/auth/signup_page.dart';
 import 'package:hiring_competition_app/views/auth/widgets/custom_text_field.dart';
+import 'package:hiring_competition_app/views/home/home_page.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatelessWidget {
@@ -27,7 +28,7 @@ class LoginPage extends StatelessWidget {
       if(msg != null) {
         errorToast(msg, context);
       } else {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => OtherInfoPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: provider.user!,)));
       }
     }
   }

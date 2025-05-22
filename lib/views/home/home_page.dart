@@ -3,10 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
+import 'package:hiring_competition_app/backend/services/firebase_services/auth_services.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_shimmer.dart';
+import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -100,7 +102,7 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Drawer();
+                     
                     },
                     child: Container(
                       alignment: Alignment.center,
