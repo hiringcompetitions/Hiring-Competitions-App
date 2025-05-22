@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, prefer_interpolation_to_compose_strings
+// ignore_for_file: use_build_context_synchronously, prefer_interpolation_to_compose_strings, unused_local_variable
 
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/models/user_model.dart';
@@ -35,6 +35,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
       }
     } catch(e) {
       errorToast("Please Enter your college mail id", context);
+      return "";
     }
   }
 
@@ -61,7 +62,7 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
         errorToast("Please select Gender", context);
         return;
       }
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final authProvider = Provider.of<CustomAuthProvider>(context, listen: false);
       final firestoreProvider = Provider.of<FirestoreProvider>(context, listen: false);
 
       final fcmToken = await firestoreProvider.getFcmToken();
@@ -80,9 +81,9 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
                         fcmtoken: fcmToken ?? 'No FCM token',
                       );
 
-      await firestoreProvider.addUser(user);
-      final authUser = authProvider.user!;
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: authUser,)));
+
+      final res = await firestoreProvider.addUser(user);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
     } catch(e) {
       errorToast(e.toString(), context);
     }

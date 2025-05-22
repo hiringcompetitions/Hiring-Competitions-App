@@ -125,7 +125,7 @@ class OppurtunitiesCard extends StatelessWidget {
                       SizedBox(width: 10),
                       Label(category, ""),
                       Label(place, "location"),
-                      Label(payout, "gift"),
+                      Label(payout, "payout"),
                       Label(deadLine, "time1"),
                     ],
                   ),

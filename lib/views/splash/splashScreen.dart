@@ -25,7 +25,7 @@ class _SplashscreenState extends State<Splashscreen>
 
     super.initState();
     Future.delayed(Duration.zero, () async {
-      final provider = Provider.of<AuthProvider>(context, listen: false);
+      final provider = Provider.of<CustomAuthProvider>(context, listen: false);
       provider.loadUser();
 
       await Future.delayed(
@@ -41,7 +41,7 @@ class _SplashscreenState extends State<Splashscreen>
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage(user: user,)),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
       }
     });

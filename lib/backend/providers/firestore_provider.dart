@@ -51,12 +51,12 @@ class FirestoreProvider extends ChangeNotifier {
 
   // Get Nick Name
 
-  Future<void> getNickName(User user) async {
+  Future<void> getNickName(User? user) async {
     try {
       _isLoading = true;
       notifyListeners();
 
-      final name = await _firestoreServices.getNickName(user);
+      final name = await _firestoreServices.getNickName(user!);
       _isLoading = false;
       _name = name!;
       notifyListeners();

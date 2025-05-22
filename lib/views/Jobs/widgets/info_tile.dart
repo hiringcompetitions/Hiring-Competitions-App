@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class InfoTile extends StatelessWidget {
-  IconData icon;
+  String image;
   String text;
   InfoTile({
-    required this.icon,
+    required this.image,
     required this.text,
     super.key});
 
@@ -13,16 +13,16 @@ class InfoTile extends StatelessWidget {
 Widget build(BuildContext context) {
   return IntrinsicWidth(
     child: Container(
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(50),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: Colors.white),
+          Image.asset("lib/assets/$image.png", height: 16,),
           SizedBox(width: 7),
           Text(text, style: Theme.of(context).textTheme.titleMedium),
         ],

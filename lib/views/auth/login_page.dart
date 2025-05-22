@@ -18,7 +18,7 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key});
 
   void loginValidator(String email, String password, BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     if(email == "" || password == "") {
       errorToast("Please enter the required credentials", context);
     } else if(!email.contains("@vishnu.edu.in")) {
@@ -28,13 +28,13 @@ class LoginPage extends StatelessWidget {
       if(msg != null) {
         errorToast(msg, context);
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(user: provider.user!,)));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
       }
     }
   }
 
   void googleLogin(BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     final res = await provider.googleLogin();
 
     if(res != null) {
@@ -48,7 +48,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthProvider>(context);
+    final provider = Provider.of<CustomAuthProvider>(context);
     return Scaffold(
       backgroundColor: CustomColors().white,
       body: Padding(

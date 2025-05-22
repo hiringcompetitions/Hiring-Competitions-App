@@ -16,7 +16,7 @@ class SignupPage extends StatelessWidget {
   SignupPage({super.key});
 
   void signupValidator(String name, String email, String password, BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     if(email == "" || password == "" || name == "") {
       errorToast("Please enter the required credentials", context);
     } else if(!email.contains("@vishnu.edu.in") || !email.toLowerCase().contains("pa")) {
@@ -32,7 +32,7 @@ class SignupPage extends StatelessWidget {
   }
 
   void googleLogin(BuildContext context) async {
-    final provider = Provider.of<AuthProvider>(context, listen: false);
+    final provider = Provider.of<CustomAuthProvider>(context, listen: false);
     final res = await provider.googleLogin();
 
     if(res != null) {
@@ -46,7 +46,7 @@ class SignupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<AuthProvider>(context);
+    final provider = Provider.of<CustomAuthProvider>(context);
     return Scaffold(
       backgroundColor: CustomColors().white,
       body: SingleChildScrollView(

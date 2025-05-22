@@ -19,12 +19,12 @@ class JobInfo extends StatefulWidget {
 }
 
 class _JobInfoState extends State<JobInfo> {
-  final List<IconData> icons = [
-    Icons.location_on_outlined,
-    Icons.access_time_outlined,
-    Icons.attach_money_outlined,
-    Icons.school_outlined,
-    Icons.calendar_today_outlined,
+  final List<String> images = [
+    "location_white",
+    "time1",
+    "payout_white",
+    "user_white",
+    "time1"
   ];
 
   final List<String> fields = [
@@ -55,11 +55,11 @@ void initState() {
     final difference = deadline.difference(now);
 
     if (difference.inDays > 0) {
-      return "${difference.inDays} days left";
+      return "${difference.inDays}d left";
     } else if (difference.inHours > 0) {
-      return "${difference.inHours} hours left";
+      return "${difference.inHours}h left";
     } else if (difference.inMinutes > 0) {
-      return "${difference.inMinutes} minutes left";
+      return "${difference.inMinutes}min left";
     } else {
       return "Expired";
     }
@@ -94,12 +94,14 @@ void initState() {
     final details = provider.details ?? {};
 
     return Scaffold(
+      backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(22.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.black,
             padding: const EdgeInsets.symmetric(vertical: 16),
+
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -110,7 +112,7 @@ void initState() {
           child: Text("Apply Now",
               style: Theme.of(context)
                   .textTheme
-                  .titleLarge
+                  .titleMedium
                   ?.copyWith(color: Colors.white)),
         ),
       ),
@@ -121,6 +123,7 @@ void initState() {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
+
 
               // AppBar area
               Row(
@@ -195,6 +198,8 @@ void initState() {
                           ],
                         )
                       ],
+
+              
                     ),
 
               const SizedBox(height: 20),
@@ -222,6 +227,8 @@ void initState() {
                         );
                       }),
                     ),
+
+         
 
               const SizedBox(height: 15),
 

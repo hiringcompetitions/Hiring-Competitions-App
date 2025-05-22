@@ -4,7 +4,7 @@ import 'package:hiring_competition_app/constants/error_formatter.dart';
 
 import '../services/firebase_services/auth_services.dart';
 
-class AuthProvider extends ChangeNotifier {
+class CustomAuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   User? _user;
