@@ -4,6 +4,7 @@ import 'package:hiring_competition_app/views/Jobs/Job_info.dart';
 
 import '../../../constants/custom_colors.dart';
 
+// ignore: must_be_immutable
 class OppurtunitiesCard extends StatelessWidget {
   final String title;
   final String companyName;

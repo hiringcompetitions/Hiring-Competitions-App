@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class InfoTile extends StatelessWidget {
   String image;
   String text;

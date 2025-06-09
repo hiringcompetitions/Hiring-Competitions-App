@@ -220,7 +220,7 @@ void initState() {
                       runSpacing: 10,
                       children: List.generate(fields.length, (index) {
                         return InfoTile(
-                          icon: icons[index],
+                          image: images[index],
                           text: (fields[index] == 'lastdate')
                               ? getTimeRemaining(details['lastdate'])
                               : (details[fields[index]] ?? 'N/A'),

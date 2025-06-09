@@ -1,5 +1,4 @@
 import 'package:avatar_plus/avatar_plus.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
