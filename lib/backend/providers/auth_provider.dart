@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/constants/error_formatter.dart';
 
-import '../services/firebase_services/auth_services.dart';
+import '../services/auth_services.dart';
 
 class CustomAuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();

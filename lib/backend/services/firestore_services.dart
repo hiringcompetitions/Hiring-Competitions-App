@@ -45,12 +45,95 @@ class FirestoreServices {
   }
 
   // Get top picks stream
-  Stream<QuerySnapshot> getTopPicks() {
-    return _firebaseFirestore.collection("TopPicks").snapshots();
+  Stream<QuerySnapshot> getTopPicks(String batch) {
+    try {
+      return _firebaseFirestore
+        .collection("Opportunities")
+        .where("isTopPick", isEqualTo: true)
+        .where("isActive", isEqualTo: true)
+        .where("eligibility", arrayContains: batch)
+        .snapshots();
+    } catch(e) {
+      print("Error fetching top picks: $e");
+      return Stream.empty(); // Return an empty stream in case of error
+    }
   }
 
-  // Get Oppurtunities
-  Stream<QuerySnapshot> getOppurtunities() {
-    return _firebaseFirestore.collection("Oppurtunities").snapshots();
+  // Get Opportunities
+  Stream<QuerySnapshot> getOpportunities(String batch) {
+    return _firebaseFirestore
+          .collection("Opportunities")
+          .where("isActive", isEqualTo: true)
+          .where("eligibility", arrayContains: batch)
+          .snapshots();
+  }
+
+  // Get User Stream
+  Stream<QuerySnapshot> getUserStream(String uid) {
+    return _firebaseFirestore
+          .collection("Users")
+          .where("uid", isEqualTo: uid)
+          .limit(1)
+          .snapshots();
+  }
+
+  // Get User Details
+  Future<DocumentSnapshot?> getUserDetails(String uid) async {
+    try {
+      final docSnapshot = await _firebaseFirestore.collection("Users").doc(uid).get();
+      return docSnapshot;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  // Get Applied Opportunities
+  Stream<QuerySnapshot> getAppliedOpportunities(String uid) {
+    return _firebaseFirestore.collection("Users").doc(uid).collection("Applied").snapshots();
+  }
+
+  // Get Applied Opportunity details
+  Future<List<Map<String, dynamic>>?> getAppliedOpportunityDetails(String userId) async {
+    try {
+      final appliedSnapshot = await _firebaseFirestore
+                                    .collection("Users")
+                                    .doc(userId)
+                                    .collection("Applied")
+                                    .get();
+
+      final List<String> appliedDocIds = appliedSnapshot.docs.map(
+        (doc) {
+          print(doc.data().toString());
+          return doc.id;
+        }
+      ).toList();
+
+      print(appliedDocIds.toString());
+
+      // Fetching job details for each applied job
+      List<Map<String, dynamic>> appliedJobs = [];
+
+      for(String docId in appliedDocIds) {
+        print(docId);
+        final opportunityDoc = await _firebaseFirestore.collection("Opportunities").doc(docId).get();
+        final doc = await _firebaseFirestore.collection("Users").doc(userId).collection("Applied").doc(docId).get();
+
+        final data = doc.data();
+        final status = data?['status'] ?? 'null';
+        final appliedOn = data?['appliedOn'] ?? '';
+
+        if(opportunityDoc.exists) {
+          final data = opportunityDoc.data() as Map<String, dynamic>;
+          data['status'] = status;
+          data['appliedOn'] = appliedOn;
+          appliedJobs.add(data);
+        }
+      }
+
+      return appliedJobs.length == 0 ? null : appliedJobs;
+    } catch(e) {
+      print(e);
+      return null;
+    }
   }
 }

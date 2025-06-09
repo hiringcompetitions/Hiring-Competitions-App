@@ -8,7 +8,7 @@ class TopPicksCard extends StatelessWidget {
   final int index;
   final String companyName;
   final String title;
-  final String eligibility;
+  final List<dynamic> eligibility;
   TopPicksCard({
     required this.index,
     required this.companyName,
@@ -96,7 +96,7 @@ class TopPicksCard extends StatelessWidget {
               // Eligibility
 
               Text(
-                "Eligibility : $eligibility",
+                "Eligibility : ${eligibility.join(', ')}",
                 style: GoogleFonts.commissioner(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
