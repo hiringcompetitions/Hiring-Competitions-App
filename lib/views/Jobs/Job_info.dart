@@ -1,16 +1,26 @@
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hiring_competition_app/backend/models/application_model.dart';
+import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
+import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
+import 'package:hiring_competition_app/constants/custom_colors.dart';
+import 'package:hiring_competition_app/constants/error_toast.dart';
+import 'package:hiring_competition_app/views/Jobs/widgets/bottom_buttons.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/info_tile.dart';
+import 'package:hiring_competition_app/views/webView/web_view_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class JobInfo extends StatefulWidget {
-  final String event_name;
-  final Color logo_color;
-  JobInfo({
-    required this.logo_color,
-    required this.event_name,
+  final String eventName;
+  final Color logoColor;
+  const JobInfo({
+    required this.logoColor,
+    required this.eventName,
     super.key,
   });
 
@@ -30,23 +40,22 @@ class _JobInfoState extends State<JobInfo> {
   final List<String> fields = [
     "location",
     "duration",
-    "stipend",
+    "payout",
     "eligibility",
     "lastdate",
   ];
 
   @override
-void initState() {
-  super.initState();
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    fetchDetails();
-  });
-}
-
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchDetails();
+    });
+  }
 
   Future<void> fetchDetails() async {
     final provider = Provider.of<InternshipProvider>(context, listen: false);
-    await provider.getdetails(widget.event_name);
+    await provider.getdetails(widget.eventName);
   }
 
   String getTimeRemaining(Timestamp lastDate) {
@@ -63,6 +72,164 @@ void initState() {
     } else {
       return "Expired";
     }
+  }
+
+  void appliedConfirmation() {
+    final provider = Provider.of<InternshipProvider>(context, listen: false);
+    final firestoreProvider =
+        Provider.of<FirestoreProvider>(context, listen: false);
+    final authProvider =
+        Provider.of<CustomAuthProvider>(context, listen: false);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text("Mark this Opportunity as Applied",
+                style: GoogleFonts.commissioner(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: CustomColors().blackText,
+                )),
+            actions: [
+              TextButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(36),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "No",
+                  style: GoogleFonts.commissioner(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColors().blackText,
+                  ),
+                ),
+              ),
+              TextButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CustomColors().darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(36),
+                  ),
+                ),
+                onPressed: () async {
+                  final docRef = await firestoreProvider
+                      .getUserDetails(authProvider.user?.uid ?? '');
+
+                  if (docRef == null) {
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                      errorToast("User not found", context);
+                    }
+                    return;
+                  }
+                  final data = docRef.data() as Map<String, dynamic>;
+                  final application = ApplicationModel(
+                    name: data['name'],
+                    rollNo: data['rollNo'],
+                    branch: data['branch'],
+                    batch: data['passedOutYear'],
+                    status: 'Applied',
+                    email: data['email'],
+                    appliedOn: Timestamp.now(),
+                  );
+
+                  final res = await provider.addApplication(
+                      provider.details?['uid'] ?? '',
+                      application,
+                      authProvider.user!.uid);
+
+                  if (context.mounted) {
+                    if (res == null) {
+                      Navigator.pop(context);
+                      errorToast("Marked as Applied", context);
+                    } else {
+                      Navigator.pop(context);
+                      errorToast(res, context);
+                    }
+                  }
+                },
+                child: Text(
+                  "Yes",
+                  style: GoogleFonts.commissioner(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void updateStatus(Map<String, dynamic> details) {
+    final provider = Provider.of<InternshipProvider>(context, listen: false);
+    final authProvider =
+        Provider.of<CustomAuthProvider>(context, listen: false);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text("Update Status as",
+                style: GoogleFonts.commissioner(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  color: CustomColors().blackText,
+                )),
+            actions: [
+              TextButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey.shade100,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(36),
+                  ),
+                ),
+                onPressed: () async {
+                  await provider.updateStatus(authProvider.user!.uid, details['uid'], 'Rejected');
+                  Navigator.pop(context);
+                  errorToast("Status Updated", context);
+                },
+                child: Text(
+                  "Rejected",
+                  style: GoogleFonts.commissioner(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: CustomColors().blackText,
+                  ),
+                ),
+              ),
+              TextButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: CustomColors().darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(36),
+                  ),
+                ),
+                onPressed: () async {
+                  await provider.updateStatus(authProvider.user!.uid, details['uid'], 'Selected');
+                  Navigator.pop(context);
+                  errorToast("Status Updated", context);
+                },
+                child: Text(
+                  "Selected",
+                  style: GoogleFonts.commissioner(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
   }
 
   Widget buildShimmerBlock({required double height, required double width}) {
@@ -83,9 +250,9 @@ void initState() {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<InternshipProvider>(context);
-    final isLoading = provider.isLoading;
+    final authProvider = Provider.of<CustomAuthProvider>(context);
 
-    if (!isLoading && provider.details == null) {
+    if (!provider.isLoading && provider.details == null) {
       return Scaffold(
         body: Center(child: Text(provider.errormessage)),
       );
@@ -97,24 +264,63 @@ void initState() {
       backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(22.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.black,
-            padding: const EdgeInsets.symmetric(vertical: 16),
+        child: 
+        !provider.isLoading
+        ? StreamBuilder(
+            key: ValueKey(details['uid']),
+            stream: provider.getAppliedStatus(
+                authProvider.user!.uid, details['uid']),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Text("");
+              }
 
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          onPressed: () {
-            // handle apply logic
-          },
-          child: Text("Apply Now",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleMedium
-                  ?.copyWith(color: Colors.white)),
-        ),
+              if (snapshot.hasError) {
+                return Text("errrrorrrr");
+              }
+
+              final data = snapshot.data;
+
+              if (data == null || !data.exists) {
+                return BottomButtons(
+                  mainButton: "Apply Now",
+                  secondButton: "Applied ?",
+                  mainFunction: () {},
+                  secondFunction: appliedConfirmation,
+                );
+              }
+
+              final data1 = data.data() as Map<String, dynamic>? ?? {};
+              final status = data1['status'];
+
+              return status == null
+                  ? BottomButtons(
+                      mainButton: "Apply Now",
+                      secondButton: "Applied ?",
+                      mainFunction: () {
+                        print("TAppppeddddd");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebViewPage(title: details['title'], url: details['url'])));
+                      },
+                      secondFunction: appliedConfirmation,
+                    )
+                  : status == 'Applied'
+                  ? BottomButtons(
+                      mainButton: "Applied",
+                      secondButton: "Update",
+                      mainFunction: () {
+                        print("Apppplieeddd");
+                      },
+                      secondFunction: () {
+                        updateStatus(details);
+                      },
+                    )
+                  : BottomButtons(
+                      mainButton: status,
+                      secondButton: "",
+                      mainFunction: () {},
+                      secondFunction: () {},
+                    );
+            }) : buildShimmerBlock(height: 60, width: double.infinity)
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -122,8 +328,7 @@ void initState() {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 20),
-
+              const SizedBox(height: 40),
 
               // AppBar area
               Row(
@@ -151,7 +356,7 @@ void initState() {
               const SizedBox(height: 20),
 
               // Title section
-              isLoading
+              provider.isLoading
                   ? Row(
                       children: [
                         buildShimmerBlock(height: 60, width: 60),
@@ -159,7 +364,10 @@ void initState() {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            buildShimmerBlock(height: 20, width: 150),
+                            buildShimmerBlock(
+                                height: 20,
+                                width:
+                                    MediaQuery.of(context).size.width * 0.65),
                             const SizedBox(height: 8),
                             buildShimmerBlock(height: 14, width: 100),
                           ],
@@ -172,10 +380,10 @@ void initState() {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20, vertical: 10),
                           decoration: BoxDecoration(
-                              color: widget.logo_color,
+                              color: widget.logoColor,
                               borderRadius: BorderRadius.circular(12)),
                           child: Text(
-                            details['name'][0],
+                            details['title'].substring(0, 1).toUpperCase(),
                             style: Theme.of(context)
                                 .textTheme
                                 .headlineLarge
@@ -189,30 +397,37 @@ void initState() {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(details['name'],
-                                style:
-                                    Theme.of(context).textTheme.headlineLarge),
-                            Text(details['company'],
-                                style:
-                                    Theme.of(context).textTheme.labelLarge),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.65,
+                              child: Text(details['title'],
+                                  style: GoogleFonts.commissioner(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w600,
+                                    color: CustomColors().blackText,
+                                  )),
+                            ),
+                            Text(details['organization'],
+                                style: GoogleFonts.commissioner(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: CustomColors().greyText)),
                           ],
                         )
                       ],
-
-              
                     ),
 
               const SizedBox(height: 20),
 
               // Info Tiles
-              isLoading
+              provider.isLoading
                   ? Wrap(
                       spacing: 10,
                       runSpacing: 10,
                       children: List.generate(
                         fields.length,
-                        (index) =>
-                            buildShimmerBlock(height: 60, width: 160),
+                        (index) => buildShimmerBlock(
+                            height: 60,
+                            width: MediaQuery.of(context).size.width),
                       ),
                     )
                   : Wrap(
@@ -223,20 +438,19 @@ void initState() {
                           image: images[index],
                           text: (fields[index] == 'lastdate')
                               ? getTimeRemaining(details['lastdate'])
-                              : (details[fields[index]] ?? 'N/A'),
+                              : fields[index] == 'eligibility'
+                                  ? details['eligibility'].join(', ')
+                                  : (details[fields[index]] ?? 'N/A'),
                         );
                       }),
                     ),
 
-         
-
               const SizedBox(height: 15),
 
               // About section
-              Text("About",
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text("About", style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
-              isLoading
+              provider.isLoading
                   ? buildShimmerBlock(height: 80, width: double.infinity)
                   : Text(details['about'],
                       style: Theme.of(context).textTheme.labelMedium),
@@ -247,7 +461,7 @@ void initState() {
               Text("Other Info",
                   style: Theme.of(context).textTheme.headlineSmall),
               const SizedBox(height: 8),
-              isLoading
+              provider.isLoading
                   ? Column(
                       children: List.generate(3, (index) {
                         return Padding(
@@ -257,31 +471,10 @@ void initState() {
                         );
                       }),
                     )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children:
-                          List.generate(details['other'].length, (index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("• ",
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium),
-                              const SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  details['other'][index],
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .labelMedium,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
+                  : Text(
+                      details['otherInfo'] ??
+                          'No additional information provided.',
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
             ],
           ),

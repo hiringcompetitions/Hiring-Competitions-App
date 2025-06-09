@@ -45,6 +45,8 @@ dependencies:
   firebase_messaging: ^15.2.5
   avatar_plus: ^0.0.5
   shimmer: ^3.0.0
+  webview_flutter: ^4.0.7
+  flutter_local_notifications: ^19.2.1
 
 flutter_launcher_icons:
   android: true
