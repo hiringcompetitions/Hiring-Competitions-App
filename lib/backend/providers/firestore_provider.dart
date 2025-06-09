@@ -9,16 +9,13 @@ class FirestoreProvider extends ChangeNotifier {
   FirestoreServices _firestoreServices = FirestoreServices();
 
   bool _isLoading = false;
-  bool? get isLoading => _isLoading;
+  bool get isLoading => _isLoading;
 
   String _name = 'random';
   String? get name => _name;
 
-  Stream<QuerySnapshot>? _topPicksSnapshots = null;
-  Stream<QuerySnapshot>? get topPicksSnapshots => _topPicksSnapshots;
-
-  Stream<QuerySnapshot>? _oppurtunitiesSnapshots = null;
-  Stream<QuerySnapshot>? get oppurtunitiesSnapshots => _oppurtunitiesSnapshots;
+  List<Map<String, dynamic>>? _data;
+  List<Map<String, dynamic>>? get data => _data;
 
   // Add User
 
@@ -68,20 +65,48 @@ class FirestoreProvider extends ChangeNotifier {
   }
 
   // Get Top Picks
-  void getTopPicks() {
-    _isLoading = true;
-    notifyListeners();
-    _topPicksSnapshots = _firestoreServices.getTopPicks();
-    _isLoading = false;
-    notifyListeners();
+  Stream<QuerySnapshot> getTopPicks(String passedOutYear) {
+    return _firestoreServices.getTopPicks(passedOutYear);
   }
 
-  // Get Oppurtunities
-  void getOppurtunities() {
-    _isLoading = true;
-    notifyListeners();
-    _oppurtunitiesSnapshots = _firestoreServices.getOppurtunities();
-    _isLoading = false;
-    notifyListeners();
+  // Get Opportunities
+  Stream<QuerySnapshot> getOpportunities(String batch) {
+    return _firestoreServices.getOpportunities(batch);
+  }
+
+  // Get User Stream
+  Stream<QuerySnapshot> getUserStream(String uid) {
+    return _firestoreServices.getUserStream(uid);
+  }
+
+  // Get User Details
+  Future<DocumentSnapshot?> getUserDetails(String uid) async {
+    try {
+      final res = await _firestoreServices.getUserDetails(uid);
+      return res;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  // Get Applied Opportunities
+  Stream<QuerySnapshot> getAppliedOpportunities(String uid) {
+    return _firestoreServices.getAppliedOpportunities(uid);
+  }
+
+  // Get Applied Opportunity Details
+  Future<void> getAppliedOpportunityDetails(String userId) async {
+    try {
+      _isLoading = true;
+      notifyListeners();
+      final res = await _firestoreServices.getAppliedOpportunityDetails(userId);
+      _data = res;
+      _isLoading = false;
+      notifyListeners();
+    } catch(e) {
+      _isLoading = false;
+      notifyListeners();
+      print(e);
+    }
   }
 }

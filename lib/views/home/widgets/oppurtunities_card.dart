@@ -1,3 +1,5 @@
+// ignore_for_file: sized_box_for_whitespace, non_constant_identifier_names, must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/views/Jobs/Job_info.dart';
@@ -7,7 +9,7 @@ import '../../../constants/custom_colors.dart';
 class OppurtunitiesCard extends StatelessWidget {
   final String title;
   final String companyName;
-  final String eligibility;
+  final List<dynamic> eligibility;
   final String category;
   final String place;
   final String payout;
@@ -37,10 +39,10 @@ class OppurtunitiesCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 10.0, right: 10, bottom: 8),
+      padding: const EdgeInsets.only(left: 10.0, right: 10, top: 8),
       child: InkWell(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>JobInfo(event_name: "Gen AI Hackathon",logo_color: colors[index%5],)));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => JobInfo(eventName: title, logoColor: colors[index%5],)));
         },
         child: Container(
             height: 132,
@@ -97,12 +99,17 @@ class OppurtunitiesCard extends StatelessWidget {
                   
                             // Company Name & Eligibility
                   
-                            Text(
-                              "$companyName | Eligibility : $eligibility",
-                              style: GoogleFonts.commissioner(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: CustomColors().greyText,
+                            Container(
+                              width: 230,
+                              child: Text(
+                                "$companyName | Eligibility : ${eligibility.join(', ')}",
+                                style: GoogleFonts.commissioner(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: CustomColors().greyText,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
                               ),
                             )
                           ],
@@ -124,8 +131,8 @@ class OppurtunitiesCard extends StatelessWidget {
                     children: [
                       SizedBox(width: 10),
                       Label(category, ""),
-                      Label(place, "location"),
-                      Label(payout, "payout"),
+                      place != "" ? Label(place, "location") : SizedBox.shrink(),
+                      payout != "" ? Label(payout, "payout") : SizedBox.shrink(),
                       Label(deadLine, "time1"),
                     ],
                   ),

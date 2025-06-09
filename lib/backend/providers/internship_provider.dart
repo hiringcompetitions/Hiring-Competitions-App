@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hiring_competition_app/backend/services/firebase_services/intership_service.dart';
+import 'package:hiring_competition_app/backend/models/application_model.dart';
+import 'package:hiring_competition_app/backend/services/intership_service.dart';
 
 class InternshipProvider extends ChangeNotifier {
   final InternshipService _intershipService = InternshipService();
@@ -17,22 +19,49 @@ class InternshipProvider extends ChangeNotifier {
     try {
       _isLoading=true;
       notifyListeners();
+      print("Fetching details for: $name");
       final result = await _intershipService.getdetails(name);
+      print(result);
       if (result != null) {
         _details = result;
-        _isLoading=false;
+        _isLoading = false;
         _errormessage = "";
         notifyListeners();
       } else {
         _details = null;
         _errormessage = "No details found for \"$name\".";
+        _isLoading = false;
+        notifyListeners();
       }
     } catch (e) {
-      _errormessage = "Failed to fetch details: $e";
       _details = null;
+      _errormessage = "Failed to fetch details: $e";
+      _isLoading = false;
+      notifyListeners();
     }
+  }
 
-    notifyListeners();
+  // Add Application
+  Future<String?> addApplication(String uid, ApplicationModel application, String userUID) async {
+    try {
+      final res = await _intershipService.addApplication(uid, application, userUID);
+      return res;
+    } catch(e) {
+      return "An Unexpected error occured. Please try again later";
+    }
+  }
+
+  // Get Application Status
+  Stream<DocumentSnapshot> getAppliedStatus(String userUID, String opportunityUID) {
+    return  _intershipService.getAppliedStatus(userUID, opportunityUID);
+  }
+
+  // Update Applied Status
+  Future<void> updateStatus(String userUID, String opportunityUID, String status) async {
+    try {
+      await _intershipService.updateAppliedStatus(userUID, opportunityUID, status);
+    } catch(e) {
+      print(e);
+    }
   }
 }
-

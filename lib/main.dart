@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
+import 'package:hiring_competition_app/backend/providers/notification_provider.dart';
 import 'package:hiring_competition_app/constants/theme.dart';
 import 'package:hiring_competition_app/firebase_options.dart';
 import 'package:hiring_competition_app/views/splash/splashScreen.dart';
@@ -16,12 +17,17 @@ void main() async {
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
+  final notificationProvider = NotificationProvider();
+  notificationProvider.setupNotifications();
+  
+  
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_)=>InternshipProvider()),
         ChangeNotifierProvider(create: (_) => CustomAuthProvider()),
         ChangeNotifierProvider(create: (_) => FirestoreProvider()),
+        ChangeNotifierProvider(create: (_) => NotificationProvider()),
       ],
       child: MyApp(),
     )
