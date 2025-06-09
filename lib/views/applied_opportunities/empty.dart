@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
+import 'package:hiring_competition_app/views/home/home_page.dart';
 
 class Empty extends StatelessWidget {
   const Empty({super.key});
@@ -22,11 +23,16 @@ class Empty extends StatelessWidget {
             ),),
           ),
           SizedBox(height: 10,),
-          Center(child: Text("Explore", style: GoogleFonts.commissioner(
-            fontSize: 20,
-            color: CustomColors().darkBlue,
-            fontWeight: FontWeight.w600
-          ),),)
+          Center(child: InkWell(
+            onTap: (){  
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>HomePage()));
+            },
+            child: Text("Explore", style: GoogleFonts.commissioner(
+              fontSize: 20,
+              color: CustomColors().darkBlue,
+              fontWeight: FontWeight.w600
+            ),),
+          ),)
         ],
       );
   }
