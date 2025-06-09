@@ -7,16 +7,17 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/backend/providers/notification_provider.dart';
-import 'package:hiring_competition_app/backend/services/auth_services.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/views/applied_opportunities/applied_oppurtunities.dart';
 import 'package:hiring_competition_app/views/home/widgets/custom_drawer_button.dart';
 import 'package:hiring_competition_app/views/home/widgets/home_page_shimmer.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunity_shimmer.dart';
+import 'package:hiring_competition_app/views/home/widgets/search_page.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_errorCard.dart';
 import 'package:hiring_competition_app/views/home/widgets/topPicks_shimmer.dart';
+import 'package:hiring_competition_app/views/home/widgets/viewall_page.dart';
 import 'package:hiring_competition_app/views/profile/profile_page.dart';
 import 'package:provider/provider.dart';
 
@@ -118,7 +119,7 @@ class _HomePageState extends State<HomePage> {
               icon: "Profile_icon",
               isActive: false,
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>ProfilePage()));
               },
             ),
           ],
@@ -232,43 +233,48 @@ class _HomePageState extends State<HomePage> {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Row(
-                      spacing: 10,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: EdgeInsets.only(left: 26),
-                            height: 48,
-                            decoration: BoxDecoration(
-                                color: CustomColors().blueShade,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  "Search",
-                                  style: GoogleFonts.commissioner(
-                                    color: CustomColors().greyText,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400,
+                    child: InkWell(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchPage()));
+                      },
+                      child: Row(
+                        spacing: 10,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.only(left: 26),
+                              height: 48,
+                              decoration: BoxDecoration(
+                                  color: CustomColors().blueShade,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Search",
+                                    style: GoogleFonts.commissioner(
+                                      color: CustomColors().greyText,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                            height: 48,
-                            width: 48,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                                color: CustomColors().darkBlue,
-                                borderRadius: BorderRadius.circular(100)),
-                            child: Image.asset(
-                              "lib/assets/search.png",
-                              height: 20,
-                            )),
-                      ],
+                          Container(
+                              height: 48,
+                              width: 48,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                  color: CustomColors().darkBlue,
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: Image.asset(
+                                "lib/assets/search.png",
+                                height: 20,
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(
@@ -291,11 +297,16 @@ class _HomePageState extends State<HomePage> {
                             color: CustomColors().blackText,
                           ),
                         ),
-                        Text("View all",
-                            style: GoogleFonts.commissioner(
-                              fontSize: 12,
-                              color: CustomColors().greyText,
-                            ))
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewallPage(TopPick: true,)));
+                          },
+                          child: Text("View all",
+                              style: GoogleFonts.commissioner(
+                                fontSize: 12,
+                                color: CustomColors().greyText,
+                              )),
+                        )
                       ],
                     ),
                   ),
@@ -378,11 +389,16 @@ class _HomePageState extends State<HomePage> {
                             color: CustomColors().blackText,
                           ),
                         ),
-                        Text("View all",
-                            style: GoogleFonts.commissioner(
-                              fontSize: 12,
-                              color: CustomColors().greyText,
-                            ))
+                        InkWell(
+                          onTap: (){
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ViewallPage(TopPick: false)));
+                          },
+                          child: Text("View all",
+                              style: GoogleFonts.commissioner(
+                                fontSize: 12,
+                                color: CustomColors().greyText,
+                              )),
+                        )
                       ],
                     ),
                   ),

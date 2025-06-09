@@ -11,6 +11,7 @@ import 'package:hiring_competition_app/views/applied_opportunities/empty.dart';
 import 'package:hiring_competition_app/views/home/home_page.dart';
 import 'package:hiring_competition_app/views/home/widgets/custom_drawer_button.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
+import 'package:hiring_competition_app/views/profile/profile_page.dart';
 import 'package:provider/provider.dart';
 
 class AppliedOppurtunities extends StatefulWidget {
@@ -115,7 +116,7 @@ class _AppliedOppurtunitiesState extends State<AppliedOppurtunities> {
               icon: "Profile_icon",
               isActive: false,
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
               },
             ),
           ],

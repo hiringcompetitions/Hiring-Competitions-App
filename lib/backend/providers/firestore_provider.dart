@@ -74,6 +74,11 @@ class FirestoreProvider extends ChangeNotifier {
     return _firestoreServices.getOpportunities(batch);
   }
 
+  //get toppicks
+  Stream<QuerySnapshot> getToppicks(String batch){
+    return _firestoreServices.getTopPicks(batch);
+  }
+
   // Get User Stream
   Stream<QuerySnapshot> getUserStream(String uid) {
     return _firestoreServices.getUserStream(uid);
