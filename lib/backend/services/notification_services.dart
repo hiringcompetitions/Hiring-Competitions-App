@@ -7,8 +7,8 @@ class NotificationServices {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       new FlutterLocalNotificationsPlugin();
 
-  Future<void> subscribeToGeneral() async {
-    await _messaging.subscribeToTopic("General");
+  Future<void> subscribeToTopic(String topic) async {
+    await _messaging.subscribeToTopic(topic);
   }
 
   Future<void> unSubscribeToTopics() async {

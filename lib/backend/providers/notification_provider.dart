@@ -10,13 +10,13 @@ class NotificationProvider extends ChangeNotifier {
     _services.initializeNotifications();
     await _services.requestPermission();
     _services.listen();
-    await _services.subscribeToGeneral();
+    await _services.subscribeToTopic("General");
   }
 
 
   // subscribe
-  Future<void> subscribeToGeneralTopic() async {
-    await _services.subscribeToGeneral();
+  Future<void> subscribeToTopic(String topic) async {
+    await _services.subscribeToTopic(topic);
   }
 
   // unsubscribe to topics
