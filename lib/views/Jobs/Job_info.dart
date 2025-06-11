@@ -7,6 +7,7 @@ import 'package:hiring_competition_app/backend/models/application_model.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
+import 'package:hiring_competition_app/backend/providers/notification_provider.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/bottom_buttons.dart';
@@ -74,7 +75,7 @@ class _JobInfoState extends State<JobInfo> {
     }
   }
 
-  void appliedConfirmation() {
+  void appliedConfirmation(String title) {
     final provider = Provider.of<InternshipProvider>(context, listen: false);
     final firestoreProvider =
         Provider.of<FirestoreProvider>(context, listen: false);
@@ -144,6 +145,9 @@ class _JobInfoState extends State<JobInfo> {
                       provider.details?['uid'] ?? '',
                       application,
                       authProvider.user!.uid);
+
+                  final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
+                  notificationProvider.subscribeToTopic(title);
 
                   if (context.mounted) {
                     if (res == null) {
@@ -286,7 +290,9 @@ class _JobInfoState extends State<JobInfo> {
                   mainButton: "Apply Now",
                   secondButton: "Applied ?",
                   mainFunction: () {},
-                  secondFunction: appliedConfirmation,
+                  secondFunction: () {
+                    appliedConfirmation(details['title']);
+                  },
                 );
               }
 
@@ -301,7 +307,9 @@ class _JobInfoState extends State<JobInfo> {
                         print("TAppppeddddd");
                         Navigator.push(context, MaterialPageRoute(builder: (context) => WebViewPage(title: details['title'], url: details['url'])));
                       },
-                      secondFunction: appliedConfirmation,
+                      secondFunction: () {
+                        appliedConfirmation(details['title']);
+                      },
                     )
                   : status == 'Applied'
                   ? BottomButtons(
