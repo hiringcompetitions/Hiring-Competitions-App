@@ -5,6 +5,7 @@ import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/views/onboarding/onboarding.dart';
+import 'package:hiring_competition_app/views/profile/edit_profile.dart';
 import 'package:hiring_competition_app/views/profile/profile_page_shimmer.dart';
 import 'package:provider/provider.dart';
 
@@ -18,7 +19,7 @@ class ProfilePage extends StatelessWidget {
         Provider.of<CustomAuthProvider>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 68, 171, 255),
+      backgroundColor: CustomColors().darkBlue,
       body: StreamBuilder(
           stream: provider.getUserStream(authProvider.user!.uid),
           builder: (context, snapshot) {
@@ -36,36 +37,36 @@ class ProfilePage extends StatelessWidget {
               final doc = data.docs.first;
 
               return Stack(children: [
-                // Red Circle
-                Positioned(
-                  top: -150,
-                  left: -250,
-                  child: Container(
-                    height: 450,
-                    width: 450,
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 99, 88),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
+                // // Red Circle
+                // Positioned(
+                //   top: -150,
+                //   left: -250,
+                //   child: Container(
+                //     height: 450,
+                //     width: 450,
+                //     padding: EdgeInsets.all(16),
+                //     decoration: BoxDecoration(
+                //       color: const Color.fromARGB(255, 255, 99, 88),
+                //       shape: BoxShape.circle,
+                //     ),
+                //   ),
+                // ),
 
-                // Yellow Circle
+                // // Yellow Circle
 
-                Positioned(
-                  top: 50,
-                  right: -120,
-                  child: Container(
-                    height: 350,
-                    width: 350,
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 255, 225, 78),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 50,
+                //   right: -120,
+                //   child: Container(
+                //     height: 350,
+                //     width: 350,
+                //     padding: EdgeInsets.all(16),
+                //     decoration: BoxDecoration(
+                //       color: const Color.fromARGB(255, 255, 225, 78),
+                //       shape: BoxShape.circle,
+                //     ),
+                //   ),
+                // ),
 
                 // Back Button
 
@@ -81,12 +82,12 @@ class ProfilePage extends StatelessWidget {
                       width: 40,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(50, 0, 0, 0),
+                        color: const Color.fromARGB(255, 255, 255, 255),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         Icons.arrow_back_ios_new,
-                        color: Colors.white,
+                        color: const Color.fromARGB(255, 9, 9, 9),
                         size: 16,
                       ),
                     ),
@@ -96,24 +97,22 @@ class ProfilePage extends StatelessWidget {
                 // Profile Details
 
                 Positioned(
-                  top: 150,
+                  top: 120,
+                  left: 10,
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-                    height: MediaQuery.of(context).size.height - 150,
-                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height - 130,
+                    width: MediaQuery.of(context).size.width - 20,
                     decoration: BoxDecoration(
                       color: const Color.fromARGB(255, 255, 255, 255),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(60),
-                        topRight: Radius.circular(60),
-                      ),
+                      borderRadius: BorderRadius.circular(24),
                     ),
                     child: SingleChildScrollView(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 60),
+                          SizedBox(height: 40),
                           BuildProfileDetail('Nick Name', doc['nickName'] ?? 'N/A'),
                           BuildProfileDetail('Name', doc['name'] ?? 'N/A'),
                           BuildProfileDetail('Roll No', doc['rollNo'] ?? 'N/A'),
@@ -122,7 +121,12 @@ class ProfilePage extends StatelessWidget {
                           BuildProfileDetail('Passed Out Year', doc['passedOutYear'] ?? 'N/A'),
                           GestureDetector(
                             onTap: () {
-                              // Navigate to Change Password Page
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfile(),
+                                ),
+                              );
                             },
                             child: Container(
                               height: 50,
@@ -137,14 +141,14 @@ class ProfilePage extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Change Password',
+                                    'Edit Profile',
                                     style: GoogleFonts.commissioner(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Icon(Icons.lock_open_rounded,
+                                  Icon(Icons.edit,
                                       color: Colors.white, size: 20),
                                 ],
                               ),
@@ -194,8 +198,9 @@ class ProfilePage extends StatelessWidget {
 
                 // Profile Image
                 Positioned(
-                    top: 100,
-                    left: MediaQuery.of(context).size.width / 2 - 50,
+                    top: 70,
+                    left: 0,
+                    right: 0,
                     child: Container(
                       height: 100,
                       width: 100,
@@ -211,29 +216,29 @@ class ProfilePage extends StatelessWidget {
                     )),
 
                 // Edit Profile Button
-                Positioned(
-                  top: 170,
-                  left: MediaQuery.of(context).size.width / 2 + 20,
-                  child: InkWell(
-                    onTap: () {
-                      // Navigate to Edit Profile Page
-                    },
-                    child: Container(
-                      height: 30,
-                      width: 30,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: CustomColors().darkBlue,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Icon(
-                        Icons.edit_outlined,
-                        color: Colors.white,
-                        size: 14,
-                      ),
-                    ),
-                  ),
-                ),
+                // Positioned(
+                //   top: 140,
+                //   left: MediaQuery.of(context).size.width / 2 + 20,
+                //   child: InkWell(
+                //     onTap: () {
+                //       // Navigate to Edit Profile Page
+                //     },
+                //     child: Container(
+                //       height: 30,
+                //       width: 30,
+                //       alignment: Alignment.center,
+                //       decoration: BoxDecoration(
+                //         color: CustomColors().darkBlue,
+                //         borderRadius: BorderRadius.circular(20),
+                //       ),
+                //       child: Icon(
+                //         Icons.edit_outlined,
+                //         color: Colors.white,
+                //         size: 14,
+                //       ),
+                //     ),
+                //   ),
+                // ),
               ]);
             }
 

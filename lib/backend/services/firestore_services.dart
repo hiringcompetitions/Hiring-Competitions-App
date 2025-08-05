@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:hiring_competition_app/backend/models/user_model.dart';
 import 'package:hiring_competition_app/constants/error_formatter.dart';
 
@@ -55,16 +56,57 @@ class FirestoreServices {
           .snapshots();
     } catch (e) {
       print("Error fetching top picks: $e");
-      return Stream.empty(); // Return an empty stream in case of error
+      return Stream.empty();
     }
   }
 
   // Get Opportunities
   Stream<QuerySnapshot> getOpportunities(String batch) {
+    debugPrint(batch);
     return _firebaseFirestore
         .collection("Opportunities")
         .where("isActive", isEqualTo: true)
         .where("eligibility", arrayContains: batch)
+        .snapshots();
+  }
+
+  // Get Internships
+  Stream<QuerySnapshot> getInternships(String batch) {
+    return _firebaseFirestore
+        .collection("Opportunities")
+        .where("isActive", isEqualTo: true)
+        .where("eligibility", arrayContains: batch)
+        .where("category", isEqualTo: "Internship")
+        .snapshots();
+  }
+
+  // Get Jobs
+  Stream<QuerySnapshot> getJobs(String batch) {
+    return _firebaseFirestore
+        .collection("Opportunities")
+        .where("isActive", isEqualTo: true)
+        .where("eligibility", arrayContains: batch)
+        .where("category", isEqualTo: "Job")
+        .snapshots();
+  }
+
+  // Get Competitions
+  Stream<QuerySnapshot> getCompetitions(String batch) {
+    return _firebaseFirestore
+        .collection("Opportunities")
+        .where("isActive", isEqualTo: true)
+        .where("eligibility", arrayContains: batch)
+        .where("category", isEqualTo: "Competition")
+        .snapshots();
+  }
+
+  // Get hackathons
+  Stream<QuerySnapshot> getHackathons(String batch) {
+    return _firebaseFirestore
+        .collection("Opportunities")
+        .where("isActive", isEqualTo: true)
+        .where("eligibility", arrayContains: batch)
+        .where("category", isEqualTo: "Hackathon")
         .snapshots();
   }
 
@@ -118,17 +160,13 @@ class FirestoreServices {
           .get();
 
       final List<String> appliedDocIds = appliedSnapshot.docs.map((doc) {
-        print(doc.data().toString());
         return doc.id;
       }).toList();
-
-      print(appliedDocIds.toString());
 
       // Fetching job details for each applied job
       List<Map<String, dynamic>> appliedJobs = [];
 
       for (String docId in appliedDocIds) {
-        print(docId);
         final opportunityDoc = await _firebaseFirestore
             .collection("Opportunities")
             .doc(docId)
@@ -152,7 +190,7 @@ class FirestoreServices {
         }
       }
 
-      return appliedJobs.length == 0 ? null : appliedJobs;
+      return appliedJobs.isEmpty ? null : appliedJobs;
     } catch (e) {
       print(e);
       return null;

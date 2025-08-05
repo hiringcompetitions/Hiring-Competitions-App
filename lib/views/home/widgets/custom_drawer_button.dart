@@ -25,7 +25,9 @@ class CustomDrawerButton extends StatelessWidget {
                       ),
                     ),
                     SizedBox(width: 18),
-                    Image.asset(
+                    icon == 'logout'
+                    ? Icon(Icons.logout)
+                    : Image.asset(
                       "lib/assets/$icon.png",
                       height: 24,
                     ),

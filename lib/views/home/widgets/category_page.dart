@@ -1,17 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
-import 'package:hiring_competition_app/constants/custom_colors.dart';
+import 'package:hiring_competition_app/views/applied_opportunities/empty.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunity_shimmer.dart';
-import 'package:hiring_competition_app/views/home/widgets/topPicks_shimmer.dart';
 import 'package:provider/provider.dart';
 
-class ViewallPage extends StatelessWidget {
-  final bool TopPick;
-  const ViewallPage({required this.TopPick, super.key});
+class CategoryPage extends StatelessWidget {
+  final String category;
+  const CategoryPage({super.key, required this.category});
 
   String getTimeRemaining(Timestamp lastDate) {
     final deadline = lastDate.toDate();
@@ -37,11 +35,7 @@ class ViewallPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text( TopPick != true ? "Opportunities" : "Top Picks", style: GoogleFonts.commissioner(
-          fontSize: 20,
-          color: CustomColors().blackText,
-          fontWeight: FontWeight.w500
-        ),),
+        title: Text(category, style: TextStyle(color: const Color.fromARGB(255, 22, 22, 22))),
       ),
       body: SingleChildScrollView(
         physics: ClampingScrollPhysics(),
@@ -54,7 +48,7 @@ class ViewallPage extends StatelessWidget {
                   stream: provider.getUserStream(authProvider.user!.uid),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return ToppicksShimmer();
+                      return OppurtunityShimmer();
                     }
 
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
@@ -65,9 +59,15 @@ class ViewallPage extends StatelessWidget {
                     final batch = data["passedOutYear"];
 
                     return StreamBuilder(
-                        stream: (TopPick)
-                            ? provider.getTopPicks(batch)
-                            : provider.getOpportunities(batch),
+                        stream: (category == "Internships")
+                            ? provider.getInternships(batch)
+                            : category == "Jobs"
+                                ? provider.getJobs(batch)
+                                : category == "Competitions"
+                                    ? provider.getCompetitions(batch)
+                                    : category == "Hackathons"
+                                        ? provider.getHackathons(batch)
+                                        : provider.getOpportunities(batch),
                         builder: (context, snapshot) {
                           if (snapshot.hasError) {
                             return Text("err");
@@ -80,7 +80,9 @@ class ViewallPage extends StatelessWidget {
 
                           if (!snapshot.hasData ||
                               snapshot.data!.docs.isEmpty) {
-                            return Text("No data");
+                            return Center(
+                              child: Empty()
+                            );
                           }
 
                           final data = snapshot.data;

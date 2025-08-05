@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
+import 'package:hiring_competition_app/views/webView/web_view_page.dart';
 
 class BottomButtons extends StatelessWidget {
   final String mainButton;
   final String secondButton;
-  final void Function()? mainFunction;
+  final String url;
+  final String title;
   final void Function()? secondFunction;
   const BottomButtons({
     required this.mainButton,
     required this.secondButton,
-    required this.mainFunction,
     required this.secondFunction,
+    required this.url,
+    required this.title,
     super.key
   });
 
@@ -29,7 +32,11 @@ class BottomButtons extends StatelessWidget {
                 borderRadius: BorderRadius.circular(50),
               ),
             ),
-            onPressed: mainFunction,
+            onPressed: () {
+              mainButton == "Apply Now"
+              ? Navigator.push(context, MaterialPageRoute(builder: (context) => WebViewPage(url: url, title: title)))
+              : ();
+            },
             child: Text(mainButton,
                 style: Theme.of(context)
                     .textTheme
