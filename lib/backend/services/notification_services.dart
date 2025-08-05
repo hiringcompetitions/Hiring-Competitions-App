@@ -1,18 +1,20 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationServices {
   // instance
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      new FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   Future<void> subscribeToTopic(String topic) async {
+    if(topic == '') return;
     await _messaging.subscribeToTopic(topic);
   }
 
   Future<void> unSubscribeToTopics() async {
-    await _messaging.unsubscribeFromTopic("General");
+    await _messaging.unsubscribeFromTopic("general");
   }
 
   void listen() {

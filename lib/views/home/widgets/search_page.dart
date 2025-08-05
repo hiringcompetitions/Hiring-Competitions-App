@@ -37,7 +37,18 @@ class SearchPage extends StatelessWidget {
       body: provider.isLoading
           ? Center(child: CircularProgressIndicator())
           : provider.results.isEmpty
-              ? Center(child: Text("No jobs found"))
+              ? Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("lib/assets/images/no_results_found.png", height: 150,),
+                  Text("No Results Found", style: GoogleFonts.commissioner(
+                    fontSize: 16,
+                    color: const Color.fromARGB(255, 119, 39, 176),
+                    fontWeight: FontWeight.w500
+                  ),),
+                  SizedBox(height: 80,)
+                ],
+              ))
               : ListView.builder(
                   itemCount: provider.results.length,
                   itemBuilder: (context, index) {

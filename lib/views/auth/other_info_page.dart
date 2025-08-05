@@ -81,9 +81,8 @@ class _OtherInfoPageState extends State<OtherInfoPage> {
                         fcmtoken: fcmToken ?? 'No FCM token',
                       );
 
-
       final res = await firestoreProvider.addUser(user);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage()), (route) => false);
     } catch(e) {
       errorToast(e.toString(), context);
     }

@@ -19,9 +19,7 @@ class InternshipProvider extends ChangeNotifier {
     try {
       _isLoading=true;
       notifyListeners();
-      print("Fetching details for: $name");
       final result = await _intershipService.getdetails(name);
-      print(result);
       if (result != null) {
         _details = result;
         _isLoading = false;
@@ -44,10 +42,15 @@ class InternshipProvider extends ChangeNotifier {
   // Add Application
   Future<String?> addApplication(String uid, ApplicationModel application, String userUID) async {
     try {
+      _isLoading = true;
+      notifyListeners();
       final res = await _intershipService.addApplication(uid, application, userUID);
       return res;
     } catch(e) {
       return "An Unexpected error occured. Please try again later";
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 

@@ -2,6 +2,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
 import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
@@ -12,6 +13,7 @@ import 'package:hiring_competition_app/views/home/home_page.dart';
 import 'package:hiring_competition_app/views/home/widgets/custom_drawer_button.dart';
 import 'package:hiring_competition_app/views/home/widgets/oppurtunities_card.dart';
 import 'package:hiring_competition_app/views/profile/profile_page.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class AppliedOppurtunities extends StatefulWidget {
@@ -50,6 +52,11 @@ class _AppliedOppurtunitiesState extends State<AppliedOppurtunities> {
     }
   }
 
+  void logout() {
+    final authProvider = Provider.of<CustomAuthProvider>(context, listen: false);
+    authProvider.signout();
+  }
+
   String formatDate(Timestamp timestamp) {
     final date = timestamp.toDate();
     final List<String> months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -66,64 +73,85 @@ class _AppliedOppurtunitiesState extends State<AppliedOppurtunities> {
       drawer: Drawer(
         backgroundColor: Colors.white,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              height: 150,
-              padding: EdgeInsets.only(top: 24, left: 16),
-              alignment: Alignment.center,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2A37FF),
-              ),
-              child: Row(
-                spacing: 6,
-                children: [
-                  Image.asset(
-                    "lib/assets/images/icon.png",
-                    height: 60,
+            Column(
+              children: [
+                Container(
+                  height: 150,
+                  padding: EdgeInsets.only(top: 24, left: 16),
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2A37FF),
                   ),
-                  Text("Hiring\nCompetitions",
-                      style: GoogleFonts.commissioner(
-                        fontSize: 26,
-                        height: 1,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      )),
-                ],
-              ),
+                  child: Row(
+                    spacing: 6,
+                    children: [
+                      Image.asset(
+                        "lib/assets/images/icon.png",
+                        height: 60,
+                      ),
+                      Text("Hiring\nCompetitions",
+                          style: GoogleFonts.commissioner(
+                            fontSize: 26,
+                            height: 1,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          )),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                CustomDrawerButton(
+                  title: "Home",
+                  icon: "home",
+                  isActive: false,
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
+                  },
+                ),
+                CustomDrawerButton(
+                  title: "Applied Opportunities",
+                  icon: "activity",
+                  isActive: true,
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                ),
+                CustomDrawerButton(
+                  title: "Profile",
+                  icon: "Profile_icon",
+                  isActive: false,
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
+                  },
+                ),
+              ],
             ),
-            SizedBox(
-              height: 16,
-            ),
-            CustomDrawerButton(
-              title: "Home",
-              icon: "home",
-              isActive: false,
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()));
-              },
-            ),
-            CustomDrawerButton(
-              title: "Applied Opportunities",
-              icon: "activity",
-              isActive: true,
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            CustomDrawerButton(
-              title: "Profile",
-              icon: "Profile_icon",
-              isActive: false,
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfilePage()));
-              },
+
+            Column(
+              children: [
+                CustomDrawerButton(
+                  title: "Logout", 
+                  icon: "logout",
+                  isActive: false,
+                  onTap: logout,
+                ),
+                SizedBox(height: 60,),
+              ],
             ),
           ],
         ),
       ),
       body: firestoreProvider.isLoading
-      ? AppliedPageShimmer()
+      ? Column(
+        children: [
+          Expanded(child: Center(child: Lottie.asset('lib/assets/animations/loading.json', height: 130, width: 230))),
+        ],
+      )
       : SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,6 +195,7 @@ class _AppliedOppurtunitiesState extends State<AppliedOppurtunities> {
                 color: CustomColors().blackText,
               ),),
             ),
+            SizedBox(height: 10,),
         
             // If Data is Null
             firestoreProvider.data == null
@@ -188,7 +217,7 @@ class _AppliedOppurtunitiesState extends State<AppliedOppurtunities> {
                       category: data?['category'] ?? '', 
                       place: data?['location'] ?? '', 
                       payout: data?['payout'] ?? '',
-                      deadLine: getTimeRemaining(data?['lastdate']), 
+                      deadLine: getTimeRemaining(data?['lastdate']),
                       index: index
                     ),
                     Padding(

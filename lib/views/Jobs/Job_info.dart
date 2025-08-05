@@ -12,7 +12,6 @@ import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/bottom_buttons.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/info_tile.dart';
-import 'package:hiring_competition_app/views/webView/web_view_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -52,6 +51,12 @@ class _JobInfoState extends State<JobInfo> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       fetchDetails();
     });
+  }
+  
+  String toValidTopic(String name) {
+    return name
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^a-z0-9_-]'), '_'); // Replace invalid chars with '_'
   }
 
   Future<void> fetchDetails() async {
@@ -120,17 +125,16 @@ class _JobInfoState extends State<JobInfo> {
                   ),
                 ),
                 onPressed: () async {
-                  final docRef = await firestoreProvider
-                      .getUserDetails(authProvider.user?.uid ?? '');
+                  await firestoreProvider.getUserDetails(authProvider.user?.uid ?? '');
 
-                  if (docRef == null) {
+                  if (firestoreProvider.userDetails == null) {
                     if (context.mounted) {
                       Navigator.pop(context);
                       errorToast("User not found", context);
                     }
                     return;
                   }
-                  final data = docRef.data() as Map<String, dynamic>;
+                  final data = firestoreProvider.userDetails ?? {};
                   final application = ApplicationModel(
                     name: data['name'],
                     rollNo: data['rollNo'],
@@ -147,7 +151,7 @@ class _JobInfoState extends State<JobInfo> {
                       authProvider.user!.uid);
 
                   final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-                  notificationProvider.subscribeToTopic(title);
+                  notificationProvider.subscribeToTopic(toValidTopic(title));
 
                   if (context.mounted) {
                     if (res == null) {
@@ -159,7 +163,13 @@ class _JobInfoState extends State<JobInfo> {
                     }
                   }
                 },
-                child: Text(
+                child:
+                provider.isLoading
+                ? SizedBox(
+                  height: 24,
+                  width: 24,
+                  child: CircularProgressIndicator(strokeWidth: 1.4,))
+                : Text(
                   "Yes",
                   style: GoogleFonts.commissioner(
                     fontSize: 16,
@@ -289,7 +299,8 @@ class _JobInfoState extends State<JobInfo> {
                 return BottomButtons(
                   mainButton: "Apply Now",
                   secondButton: "Applied ?",
-                  mainFunction: () {},
+                  url: details['url'],
+                  title: details['title'],
                   secondFunction: () {
                     appliedConfirmation(details['title']);
                   },
@@ -303,10 +314,8 @@ class _JobInfoState extends State<JobInfo> {
                   ? BottomButtons(
                       mainButton: "Apply Now",
                       secondButton: "Applied ?",
-                      mainFunction: () {
-                        print("TAppppeddddd");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => WebViewPage(title: details['title'], url: details['url'])));
-                      },
+                      url: details['url'],
+                      title: details['title'],
                       secondFunction: () {
                         appliedConfirmation(details['title']);
                       },
@@ -315,9 +324,8 @@ class _JobInfoState extends State<JobInfo> {
                   ? BottomButtons(
                       mainButton: "Applied",
                       secondButton: "Update",
-                      mainFunction: () {
-                        print("Apppplieeddd");
-                      },
+                      url: details['url'],
+                      title: details['title'],
                       secondFunction: () {
                         updateStatus(details);
                       },
@@ -325,7 +333,8 @@ class _JobInfoState extends State<JobInfo> {
                   : BottomButtons(
                       mainButton: status,
                       secondButton: "",
-                      mainFunction: () {},
+                      url: details['url'],
+                      title: details['title'],
                       secondFunction: () {},
                     );
             }) : buildShimmerBlock(height: 60, width: double.infinity)

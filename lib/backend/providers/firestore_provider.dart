@@ -17,6 +17,9 @@ class FirestoreProvider extends ChangeNotifier {
   List<Map<String, dynamic>>? _data;
   List<Map<String, dynamic>>? get data => _data;
 
+  Map<String, dynamic>? _userDetails;
+  Map<String, dynamic>? get userDetails => _userDetails;
+
   // Add User
 
   Future<String?> addUser(UserModel user) async {
@@ -74,6 +77,26 @@ class FirestoreProvider extends ChangeNotifier {
     return _firestoreServices.getOpportunities(batch);
   }
 
+  // Get Internships
+  Stream<QuerySnapshot> getInternships(String batch) {
+    return _firestoreServices.getInternships(batch);
+  }
+
+  // Get Jobs
+  Stream<QuerySnapshot> getJobs(String batch) {
+    return _firestoreServices.getJobs(batch);
+  }
+
+  // Get Competitions
+  Stream<QuerySnapshot> getCompetitions(String batch) {
+    return _firestoreServices.getCompetitions(batch);
+  }
+
+  // Get Hackathons
+  Stream<QuerySnapshot> getHackathons(String batch) {
+    return _firestoreServices.getHackathons(batch);
+  }
+
   //get toppicks
   Stream<QuerySnapshot> getToppicks(String batch){
     return _firestoreServices.getTopPicks(batch);
@@ -85,12 +108,16 @@ class FirestoreProvider extends ChangeNotifier {
   }
 
   // Get User Details
-  Future<DocumentSnapshot?> getUserDetails(String uid) async {
+  Future<void> getUserDetails(String uid) async {
     try {
       final res = await _firestoreServices.getUserDetails(uid);
-      return res;
+      if(res != null) {
+        final data = res.data() as Map<String, dynamic>;
+        _userDetails = data;
+        notifyListeners();
+      }
     } catch(e) {
-      return null;
+      print(e);
     }
   }
 

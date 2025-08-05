@@ -59,7 +59,7 @@ class TopPicksCard extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Text(
-                        companyName.substring(0,1),
+                        companyName.substring(0,1).toUpperCase(),
                         style: GoogleFonts.commissioner(
                             fontSize: 18,
                             fontWeight: FontWeight.w500,

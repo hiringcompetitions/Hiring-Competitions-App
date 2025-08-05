@@ -45,17 +45,25 @@ class OppurtunitiesCard extends StatelessWidget {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(builder: (context) => JobInfo(eventName: title, logoColor: colors[index%5],)));
         },
-        child: Container(
+        child: AnimatedContainer(
+            duration: Duration(milliseconds: 1000),
+            curve: Curves.easeInOut,
             height: 132,
             padding: EdgeInsets.only(bottom: 16),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 244, 244, 244),
-                borderRadius: BorderRadius.circular(20)),
+              color: const Color.fromARGB(255, 244, 244, 244),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                width: 0,
+                color: Colors.blue
+              )
+            ),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top : 16.0, right: 16, left: 16),
+                  padding:
+                  const EdgeInsets.only(top : 16.0, right: 16, left: 16),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     spacing: 14,
@@ -71,10 +79,10 @@ class OppurtunitiesCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(14),
                         ),
                         child: Text(
-                          companyName.substring(0,1),
-                          style: GoogleFonts.merriweather(
+                          companyName.substring(0,1).toUpperCase(),
+                          style: GoogleFonts.limelight(
                               fontSize: 28,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w500,
                               color: Colors.white),
                         ),
                       ),
