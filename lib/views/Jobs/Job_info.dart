@@ -3,15 +3,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hiring_competition_app/backend/models/application_model.dart';
 import 'package:hiring_competition_app/backend/providers/auth_provider.dart';
-import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
 import 'package:hiring_competition_app/backend/providers/internship_provider.dart';
-import 'package:hiring_competition_app/backend/providers/notification_provider.dart';
+import 'package:hiring_competition_app/backend/providers/firestore_provider.dart';
+import 'package:hiring_competition_app/backend/models/application_model.dart';
 import 'package:hiring_competition_app/constants/custom_colors.dart';
 import 'package:hiring_competition_app/constants/error_toast.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/bottom_buttons.dart';
 import 'package:hiring_competition_app/views/Jobs/widgets/info_tile.dart';
+// Make sure this path to your WebViewPage is correct
+import 'package:hiring_competition_app/views/webView/web_view_page.dart'; 
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -52,16 +53,69 @@ class _JobInfoState extends State<JobInfo> {
       fetchDetails();
     });
   }
-  
-  String toValidTopic(String name) {
-    return name
-        .toLowerCase()
-        .replaceAll(RegExp(r'[^a-z0-9_-]'), '_'); // Replace invalid chars with '_'
-  }
 
   Future<void> fetchDetails() async {
     final provider = Provider.of<InternshipProvider>(context, listen: false);
     await provider.getdetails(widget.eventName);
+  }
+
+  // This function contains the entire logic for your new feature.
+  Future<void> handleApplyFlow(Map<String, dynamic> details) async {
+    // 1. Navigate to the WebView and WAIT for the user to come back.
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WebViewPage(url: details['url'], title: details['title']),
+      ),
+    );
+
+    if (!mounted) return; // Safety check
+
+    // 2. Show the dialog asking if they applied.
+    final bool? didApply = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // User must make a choice
+      builder: (context) => const _PostApplicationDialog(),
+    );
+
+    if (didApply == true) {
+      final provider = Provider.of<InternshipProvider>(context, listen: false);
+      final firestoreProvider = Provider.of<FirestoreProvider>(context, listen: false);
+      final authProvider = Provider.of<CustomAuthProvider>(context, listen: false);
+
+      await firestoreProvider.getUserDetails(authProvider.user?.uid ?? '');
+      if (firestoreProvider.userDetails == null) {
+        if (context.mounted) {
+          errorToast("User not found", context);
+        }
+        return;
+      }
+      final data = firestoreProvider.userDetails ?? {};
+      final application = ApplicationModel(
+        name: data['name'],
+        rollNo: data['rollNo'],
+        branch: data['branch'],
+        batch: data['passedOutYear'],
+        status: 'Applied',
+        email: data['email'],
+        appliedOn: Timestamp.now(),
+      );
+
+      final res = await provider.addApplication(
+        details['uid'],
+        application,
+        authProvider.user!.uid,
+      );
+
+      if (context.mounted) {
+        if (res == null) {
+          setState(() {});
+          errorToast("Your status has been updated to 'Applied'!", context);
+        } else {
+          errorToast(res, context);
+        }
+      }
+    }
   }
 
   String getTimeRemaining(Timestamp lastDate) {
@@ -78,109 +132,6 @@ class _JobInfoState extends State<JobInfo> {
     } else {
       return "Expired";
     }
-  }
-
-  void appliedConfirmation(String title) {
-    final provider = Provider.of<InternshipProvider>(context, listen: false);
-    final firestoreProvider =
-        Provider.of<FirestoreProvider>(context, listen: false);
-    final authProvider =
-        Provider.of<CustomAuthProvider>(context, listen: false);
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text("Mark this Opportunity as Applied",
-                style: GoogleFonts.commissioner(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                  color: CustomColors().blackText,
-                )),
-            actions: [
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey.shade100,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "No",
-                  style: GoogleFonts.commissioner(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: CustomColors().blackText,
-                  ),
-                ),
-              ),
-              TextButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: CustomColors().darkBlue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(36),
-                  ),
-                ),
-                onPressed: () async {
-                  await firestoreProvider.getUserDetails(authProvider.user?.uid ?? '');
-
-                  if (firestoreProvider.userDetails == null) {
-                    if (context.mounted) {
-                      Navigator.pop(context);
-                      errorToast("User not found", context);
-                    }
-                    return;
-                  }
-                  final data = firestoreProvider.userDetails ?? {};
-                  final application = ApplicationModel(
-                    name: data['name'],
-                    rollNo: data['rollNo'],
-                    branch: data['branch'],
-                    batch: data['passedOutYear'],
-                    status: 'Applied',
-                    email: data['email'],
-                    appliedOn: Timestamp.now(),
-                  );
-
-                  final res = await provider.addApplication(
-                      provider.details?['uid'] ?? '',
-                      application,
-                      authProvider.user!.uid);
-
-                  final notificationProvider = Provider.of<NotificationProvider>(context, listen: false);
-                  notificationProvider.subscribeToTopic(toValidTopic(title));
-
-                  if (context.mounted) {
-                    if (res == null) {
-                      Navigator.pop(context);
-                      errorToast("Marked as Applied", context);
-                    } else {
-                      Navigator.pop(context);
-                      errorToast(res, context);
-                    }
-                  }
-                },
-                child:
-                provider.isLoading
-                ? SizedBox(
-                  height: 24,
-                  width: 24,
-                  child: CircularProgressIndicator(strokeWidth: 1.4,))
-                : Text(
-                  "Yes",
-                  style: GoogleFonts.commissioner(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
   }
 
   void updateStatus(Map<String, dynamic> details) {
@@ -207,7 +158,8 @@ class _JobInfoState extends State<JobInfo> {
                   ),
                 ),
                 onPressed: () async {
-                  await provider.updateStatus(authProvider.user!.uid, details['uid'], 'Rejected');
+                  await provider.updateStatus(
+                      authProvider.user!.uid, details['uid'], 'Rejected');
                   Navigator.pop(context);
                   errorToast("Status Updated", context);
                 },
@@ -228,7 +180,8 @@ class _JobInfoState extends State<JobInfo> {
                   ),
                 ),
                 onPressed: () async {
-                  await provider.updateStatus(authProvider.user!.uid, details['uid'], 'Selected');
+                  await provider.updateStatus(
+                      authProvider.user!.uid, details['uid'], 'Selected');
                   Navigator.pop(context);
                   errorToast("Status Updated", context);
                 },
@@ -278,66 +231,56 @@ class _JobInfoState extends State<JobInfo> {
       backgroundColor: Colors.white,
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(22.0),
-        child: 
-        !provider.isLoading
-        ? StreamBuilder(
-            key: ValueKey(details['uid']),
-            stream: provider.getAppliedStatus(
-                authProvider.user!.uid, details['uid']),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Text("");
-              }
+        child: !provider.isLoading
+                ? StreamBuilder(
+                key: ValueKey(details['uid']),
+                stream: provider.getAppliedStatus(authProvider.user!.uid, details['uid']),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return buildShimmerBlock(height: 60, width: double.infinity);
+                  }
 
-              if (snapshot.hasError) {
-                return Text("errrrorrrr");
-              }
+                  if (snapshot.hasError) {
+                    return Text("errrrorrrr");
+                  }
 
-              final data = snapshot.data;
+                  final data = snapshot.data;
 
-              if (data == null || !data.exists) {
-                return BottomButtons(
-                  mainButton: "Apply Now",
-                  secondButton: "Applied ?",
-                  url: details['url'],
-                  title: details['title'],
-                  secondFunction: () {
-                    appliedConfirmation(details['title']);
-                  },
-                );
-              }
+                      if (data == null || !(data as dynamic).exists) {
+                        return BottomButtons(
+                          mainButton: "Apply Now",
+                          secondButton: "",
+                          mainFunction: () => handleApplyFlow(details),
+                          secondFunction: null,
+                        );
+                      }
 
-              final data1 = data.data() as Map<String, dynamic>? ?? {};
-              final status = data1['status'];
+                  final data1 = (data as dynamic).data() as Map<String, dynamic>? ?? {};
+                  final status = data1['status'];
 
-              return status == null
-                  ? BottomButtons(
-                      mainButton: "Apply Now",
-                      secondButton: "Applied ?",
-                      url: details['url'],
-                      title: details['title'],
-                      secondFunction: () {
-                        appliedConfirmation(details['title']);
-                      },
-                    )
-                  : status == 'Applied'
-                  ? BottomButtons(
-                      mainButton: "Applied",
-                      secondButton: "Update",
-                      url: details['url'],
-                      title: details['title'],
-                      secondFunction: () {
-                        updateStatus(details);
-                      },
-                    )
-                  : BottomButtons(
-                      mainButton: status,
-                      secondButton: "",
-                      url: details['url'],
-                      title: details['title'],
-                      secondFunction: () {},
-                    );
-            }) : buildShimmerBlock(height: 60, width: double.infinity)
+                  return status == null
+                          ? BottomButtons(
+                              mainButton: "Apply Now",
+                              secondButton: "",
+                              mainFunction: () => handleApplyFlow(details),
+                              secondFunction: null,
+                            )
+                          : status == 'Applied'
+                              ? BottomButtons(
+                                  mainButton: "Update Status",
+                                  secondButton: "",
+                                  mainFunction: () => updateStatus(details),
+                                  secondFunction: null,
+                                )
+                              : BottomButtons(
+                                  mainButton: status,
+                                  secondButton: "",
+                                  mainFunction: null,
+                                  secondFunction: null,
+                                );
+                },
+              )
+            : buildShimmerBlock(height: 60, width: double.infinity),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -414,7 +357,7 @@ class _JobInfoState extends State<JobInfo> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
+                            SizedBox(
                               width: MediaQuery.of(context).size.width * 0.65,
                               child: Text(details['title'],
                                   style: GoogleFonts.commissioner(
@@ -456,7 +399,7 @@ class _JobInfoState extends State<JobInfo> {
                           text: (fields[index] == 'lastdate')
                               ? getTimeRemaining(details['lastdate'])
                               : fields[index] == 'eligibility'
-                                  ? details['eligibility'].join(', ')
+                                  ? (details['eligibility'] as List).join(', ')
                                   : (details[fields[index]] ?? 'N/A'),
                         );
                       }),
@@ -496,6 +439,68 @@ class _JobInfoState extends State<JobInfo> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+// The dialog widget that asks the user to confirm their application status
+class _PostApplicationDialog extends StatefulWidget {
+  const _PostApplicationDialog();
+
+  @override
+  _PostApplicationDialogState createState() => _PostApplicationDialogState();
+}
+
+class _PostApplicationDialogState extends State<_PostApplicationDialog> {
+  String? _selectedValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AlertDialog(
+        title: const Text('Update Application Status'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Did you successfully submit your application?'),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<String>(
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+              ),
+              isExpanded: true,
+              hint: const Text('Please confirm'),
+              value: _selectedValue,
+              items: ['Yes, I applied', 'No, I did not']
+                  .map((String value) => DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,style: TextStyle(color: CustomColors().blackText),),
+                      ))
+                  .toList(),
+              onChanged: (String? newValue) {
+                setState(() {
+                  _selectedValue = newValue;
+                });
+              },
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Confirm'),
+            onPressed: () {
+              if (_selectedValue != null) {
+                Navigator.of(context).pop(_selectedValue == 'Yes, I applied');
+              } else {
+                errorToast("Please make a selection", context);
+              }
+            },
+          ),
+        ],
       ),
     );
   }
